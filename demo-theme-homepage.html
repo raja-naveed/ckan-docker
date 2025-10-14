@@ -1,0 +1,106 @@
+{% ckan_extends %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="/demotheme/css/demotheme.css" />
+{% endblock %}
+
+{% block primary_content %}
+  {# Hero Section #}
+  <div class="demo-hero">
+    <div class="container">
+      <div class="demo-hero-content">
+        <h1 class="demo-hero-title">🚀 Welcome to Our Data Portal</h1>
+        <p class="demo-hero-subtitle">Explore, discover, and download open datasets</p>
+        <div class="demo-stats">
+          <div class="demo-stat-item">
+            <div class="demo-stat-number">{{ h.demo_dataset_count() }}</div>
+            <div class="demo-stat-label">Datasets Available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# Search Section #}
+  <div class="container">
+    <div class="demo-search-wrapper">
+      {{ super() }}
+    </div>
+  </div>
+
+  {# Recent Datasets Section #}
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-section-title">📊 Recently Updated Datasets</h2>
+      <div class="row">
+        {% for package in h.demo_recent_datasets() %}
+          <div class="col-md-4 col-sm-6">
+            <div class="demo-dataset-card">
+              <h3 class="demo-dataset-title">
+                <a href="{{ h.url_for('dataset.read', id=package.name) }}">
+                  {{ package.title or package.name }}
+                </a>
+              </h3>
+              <p class="demo-dataset-notes">
+                {{ h.markdown_extract(package.notes, 100) if package.notes else "No description available" }}
+              </p>
+              <div class="demo-dataset-meta">
+                <span class="badge">{{ package.num_resources or 0 }} resources</span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="text-center" style="margin-top: 30px;">
+        <a href="{{ h.url_for('dataset.search') }}" class="btn btn-primary btn-lg">
+          View All Datasets →
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block secondary_content %}
+  {# Popular Groups Sidebar #}
+  <div class="module demo-sidebar-module">
+    <div class="module-heading">
+      <h3>🏢 Popular Groups</h3>
+    </div>
+    <div class="module-content">
+      <ul class="demo-group-list">
+        {% for group in h.demo_most_popular_groups() %}
+          <li class="demo-group-item">
+            <a href="{{ h.url_for('group.read', id=group.name) }}">
+              {{ group.display_name or group.name }}
+              <span class="badge pull-right">{{ group.package_count }}</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="text-muted">No groups yet</li>
+        {% endfor %}
+      </ul>
+      <a href="{{ h.url_for('group.index') }}" class="btn btn-default btn-block" style="margin-top: 15px;">
+        View All Groups
+      </a>
+    </div>
+  </div>
+
+  {# Info Box #}
+  <div class="module demo-info-box">
+    <div class="module-heading">
+      <h3>💡 About This Portal</h3>
+    </div>
+    <div class="module-content">
+      <p>This is a demo CKAN theme showcasing custom design capabilities.</p>
+      <ul>
+        <li>Custom hero section</li>
+        <li>Modern card layouts</li>
+        <li>Helper functions</li>
+        <li>Responsive design</li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+

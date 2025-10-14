@@ -1,0 +1,255 @@
+{% ckan_extends %}
+
+{% block styles %}
+  {{ super() }}
+  <style>
+    /* Custom Theme Styles */
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 80px 40px;
+      text-align: center;
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-title {
+      font-size: 3.5em;
+      margin-bottom: 15px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+      font-size: 1.5em;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .dataset-count {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 20px 30px;
+      border-radius: 50px;
+      display: inline-block;
+      font-size: 1.2em;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 30px;
+    }
+
+    /* Custom Cards */
+    .custom-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+
+    .custom-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .custom-card h3 {
+      color: #2c3e50;
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .custom-card h3 a {
+      color: #2c3e50;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .custom-card h3 a:hover {
+      color: #3498db;
+    }
+
+    /* Section Titles */
+    .section-title {
+      color: #2c3e50;
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 15px auto;
+      border-radius: 2px;
+    }
+
+    /* Sidebar */
+    .sidebar-box {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e9ecef;
+    }
+
+    .sidebar-title {
+      color: #2c3e50;
+      font-size: 1.4em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #ecf0f1;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Info Box */
+    .info-box {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border: none;
+    }
+
+    .info-box .sidebar-title {
+      color: white;
+      -webkit-text-fill-color: white;
+      border-bottom-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Buttons */
+    .custom-btn {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1em;
+      font-weight: 600;
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .custom-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 50px 20px;
+      }
+      
+      .hero-title {
+        font-size: 2.5em;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.2em;
+      }
+      
+      .section-title {
+        font-size: 2em;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block primary_content %}
+  <!-- Custom Hero Section -->
+  <div class="hero-section">
+    <h1 class="hero-title">🚀 Welcome to Our Data Portal</h1>
+    <p class="hero-subtitle">Explore, discover, and download open datasets</p>
+    <div class="dataset-count">
+      <i class="fa fa-database"></i> 0 Datasets Available
+    </div>
+  </div>
+
+  <!-- Original CKAN Content -->
+  {{ super() }}
+
+  <!-- Custom Content Section -->
+  <div class="row" style="margin-top: 40px;">
+    <div class="col-md-9">
+      <h2 class="section-title">📊 Recently Updated Datasets</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="custom-card">
+            <h3><a href="/dataset">Sample Dataset 1</a></h3>
+            <p>This is a sample dataset description showing how the custom theme looks with real content.</p>
+            <a href="/dataset" class="custom-btn">View Data</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-card">
+            <h3><a href="/dataset">Sample Dataset 2</a></h3>
+            <p>Another sample dataset to demonstrate the beautiful card layout and hover effects.</p>
+            <a href="/dataset" class="custom-btn">View Data</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-card">
+            <h3><a href="/dataset">Sample Dataset 3</a></h3>
+            <p>Third sample dataset showing the responsive grid layout and modern styling.</p>
+            <a href="/dataset" class="custom-btn">View Data</a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <a href="/dataset" class="custom-btn">View All Datasets</a>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="sidebar-box">
+        <h3 class="sidebar-title">🏢 Popular Groups</h3>
+        <ul class="list-unstyled">
+          <li><a href="/group">Environment</a> <span class="badge">5</span></li>
+          <li><a href="/group">Healthcare</a> <span class="badge">3</span></li>
+          <li><a href="/group">Transport</a> <span class="badge">2</span></li>
+          <li><a href="/group">Education</a> <span class="badge">1</span></li>
+        </ul>
+        <div class="text-center">
+          <a href="/group" class="btn btn-sm btn-default">View All Groups</a>
+        </div>
+      </div>
+
+      <div class="sidebar-box info-box">
+        <h3 class="sidebar-title">💡 About This Portal</h3>
+        <p>This is a demo CKAN theme showcasing custom design capabilities.</p>
+        <ul>
+          <li>✨ Custom hero section</li>
+          <li>🎨 Modern card layouts</li>
+          <li>⚡ Live data integration</li>
+          <li>📱 Responsive design</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

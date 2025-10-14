@@ -1,0 +1,2 @@
+# Custom theme for CKAN
+

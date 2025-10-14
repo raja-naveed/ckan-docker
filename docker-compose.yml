@@ -22,8 +22,8 @@ services:
     
   ckan:
     build:
-      context: ckan/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.custom
       args:
         - TZ=${TZ}
     networks:

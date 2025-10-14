@@ -1,0 +1,240 @@
+/* Demo Theme Custom Styles */
+
+/* Hero Section */
+.demo-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 80px 0;
+    margin-bottom: 40px;
+    border-radius: 0;
+}
+
+.demo-hero-content {
+    text-align: center;
+}
+
+.demo-hero-title {
+    font-size: 52px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.demo-hero-subtitle {
+    font-size: 24px;
+    opacity: 0.95;
+    margin-bottom: 40px;
+}
+
+.demo-stats {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 30px;
+}
+
+.demo-stat-item {
+    background: rgba(255,255,255,0.15);
+    padding: 25px 40px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.demo-stat-number {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.demo-stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Search Wrapper */
+.demo-search-wrapper {
+    margin-bottom: 50px;
+}
+
+/* Section Styling */
+.demo-section {
+    padding: 50px 0;
+    background-color: #f8f9fa;
+}
+
+.demo-section-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* Dataset Cards */
+.demo-dataset-card {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.demo-dataset-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.demo-dataset-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.demo-dataset-title a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.demo-dataset-title a:hover {
+    color: #3498db;
+}
+
+.demo-dataset-notes {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    min-height: 60px;
+}
+
+.demo-dataset-meta {
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.demo-dataset-meta .badge {
+    background-color: #3498db;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* Sidebar Modules */
+.demo-sidebar-module {
+    margin-bottom: 25px;
+}
+
+.demo-sidebar-module .module-heading {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 4px 4px 0 0;
+}
+
+.demo-sidebar-module .module-heading h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.demo-group-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.demo-group-item {
+    border-bottom: 1px solid #eee;
+}
+
+.demo-group-item:last-child {
+    border-bottom: none;
+}
+
+.demo-group-item a {
+    display: block;
+    padding: 12px 15px;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.demo-group-item a:hover {
+    background-color: #f8f9fa;
+}
+
+.demo-group-item .badge {
+    background-color: #3498db;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+/* Info Box */
+.demo-info-box {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.demo-info-box .module-heading {
+    background: rgba(255,255,255,0.15);
+}
+
+.demo-info-box .module-content {
+    color: white;
+}
+
+.demo-info-box ul {
+    margin-left: 20px;
+}
+
+.demo-info-box li {
+    margin-bottom: 8px;
+}
+
+/* Header Customization */
+.account-masthead {
+    background-color: #2c3e50;
+}
+
+.masthead {
+    background-color: #34495e;
+}
+
+.masthead .logo img {
+    max-height: 55px;
+}
+
+/* Footer */
+.site-footer {
+    background-color: #2c3e50;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .demo-hero-title {
+        font-size: 36px;
+    }
+    
+    .demo-hero-subtitle {
+        font-size: 18px;
+    }
+    
+    .demo-stats {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .demo-section-title {
+        font-size: 24px;
+    }
+}
+
+

@@ -1,0 +1,31 @@
+FROM ckan/ckan-base:2.11
+
+# Copy custom initialization scripts
+COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/* /docker-entrypoint.d/
+
+# Apply any patches
+COPY --chown=ckan-sys:ckan-sys ckan/patches /srv/app/patches
+
+# Copy custom theme extension
+COPY --chown=ckan-sys:ckan-sys custom-theme/ckanext /srv/app/src/ckanext-custom-theme/ckanext
+COPY --chown=ckan-sys:ckan-sys custom-theme/setup.py /srv/app/src/ckanext-custom-theme/
+
+USER root
+
+# Apply patches
+RUN for d in /srv/app/patches/*; do \
+        if [ -d $d ]; then \
+            for f in `ls $d/*.patch | sort -g`; do \
+                cd /srv/app/src/`basename "$d"` && echo "Applying patch $f to /srv/app/src/`basename $d`"; patch -p1 < "$f" ; \
+            done ; \
+        fi ; \
+    done
+
+# Create public directory and install custom theme
+RUN mkdir -p /srv/app/src/ckanext-custom-theme/ckanext/custom_theme/public && \
+    chown -R ckan:ckan-sys /srv/app/src/ckanext-custom-theme && \
+    cd /srv/app/src/ckanext-custom-theme && \
+    pip install -e .
+
+USER ckan
+

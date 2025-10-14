@@ -244,6 +244,97 @@
       font-weight: 500;
     }
 
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23e6f3ff"/><stop offset="100%" style="stop-color:%23b3d9ff"/></linearGradient><linearGradient id="road" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23f0f0f0"/><stop offset="100%" style="stop-color:%23d0d0d0"/></linearGradient></defs><rect width="1200" height="400" fill="url(%23sky)"/><ellipse cx="600" cy="200" rx="800" ry="150" fill="%23d4e6a0"/><rect x="0" y="300" width="1200" height="100" fill="url(%23road)"/><rect x="0" y="350" width="1200" height="10" fill="white"/><rect x="0" y="360" width="1200" height="10" fill="white"/><rect x="0" y="370" width="1200" height="10" fill="white"/><rect x="0" y="380" width="1200" height="10" fill="white"/><rect x="0" y="390" width="1200" height="10" fill="white"/></svg>');
+      background-size: cover;
+      background-position: center;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-content {
+      text-align: center;
+      color: white;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+
+    .hero-title {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 30px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .hero-search-container {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-search-title {
+      color: #1e3a5f;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .hero-search-box {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .hero-search-input {
+      width: 100%;
+      padding: 15px 50px 15px 15px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      background: white;
+    }
+
+    .hero-search-input:focus {
+      outline: none;
+      border-color: #2c5aa0;
+    }
+
+    .hero-search-button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #2c5aa0;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .hero-search-button:hover {
+      background: #1e3a5f;
+    }
+
+    .image-attribution {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      color: white;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
     /* Responsive Design */
     @media (max-width: 1024px) {
       .header-container {
@@ -312,6 +403,15 @@
         font-size: 16px;
         text-align: center;
       }
+
+      .hero-title {
+        font-size: 24px;
+        padding: 15px 20px;
+      }
+
+      .hero-search-container {
+        padding: 20px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -349,26 +449,23 @@
 {% endblock %}
 
 {% block page %}
-  <!-- Custom Data.gov.au Style Header -->
+  <!-- Data.gov.au Style Header -->
   <div class="header">
+    <!-- Main Header -->
     <div class="header-top">
       <div class="header-container">
         <!-- Left Section - Branding -->
         <div class="header-branding">
-          <div class="government-emblem">
-          </div>
+          <div class="government-emblem"></div>
           <div class="government-text">
-            <p class="government-label">Australian Government</p>
-            <h1 class="site-title">
-              Data.gov.au
-              <span class="beta-tag">beta</span>
-            </h1>
+            <p class="government-label">Data Portal</p>
           </div>
         </div>
 
         <!-- Center Section - Navigation -->
         <div class="header-navigation">
-          <a href="{{ h.url_for('dataset.search') }}" class="nav-link">Datasets</a>
+          <a href="{{ h.url_for('dataset.search') }}" class="nav-link">Data</a>
+          <a href="{{ h.url_for('group.index') }}" class="nav-link">Topics</a>
           <a href="{{ h.url_for('organization.index') }}" class="nav-link">Organisations</a>
           <a href="{{ h.url_for('home.about') }}" class="nav-link">About</a>
         </div>
@@ -377,21 +474,42 @@
         <div class="header-actions">
           <div class="search-container">
             <form action="{{ h.url_for('dataset.search') }}" method="get">
-              <input type="text" name="q" placeholder="Search" class="search-input">
+              <input type="text" name="q" placeholder="Search datasets..." class="search-input">
               <button type="submit" class="search-button">🔍</button>
             </form>
           </div>
-          <a href="{{ h.url_for('user.login') }}" class="login-link">Log In</a>
+          <a href="{{ h.url_for('user.login') }}" class="login-link">Log in</a>
         </div>
       </div>
     </div>
-    
+
     <!-- Dark teal section below header -->
     <div class="header-bottom">
       <div class="header-bottom-content">
-        Discover and download open datasets from Australian Government agencies
+        Find Government data
       </div>
     </div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-title">
+        Discover, use open data
+      </div>
+      <div class="hero-search-container">
+        <div class="hero-search-title">
+          Search over {{ h.custom_get_total_datasets() }} datasets and {{ h.custom_get_total_datasets() * 2 }} resources
+        </div>
+        <div class="hero-search-box">
+          <form action="{{ h.url_for('dataset.search') }}" method="get">
+            <input type="text" name="q" placeholder="E.g Environment" class="hero-search-input">
+            <button type="submit" class="hero-search-button">🔍</button>
+          </form>
+        </div>
+      </div>
+    </div>
+   
   </div>
 
   <!-- Original CKAN Content -->

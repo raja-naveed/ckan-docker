@@ -1,0 +1,20 @@
+{% ckan_extends %}
+
+{% block styles %}
+  {{ super() }}
+  <style>
+    /* Global Custom Theme Styles */
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    /* Hide default CKAN header elements */
+    .navbar {
+      display: none !important;
+    }
+    
+    .masthead {
+      display: none !important;
+    }
+  </style>
+{% endblock %}

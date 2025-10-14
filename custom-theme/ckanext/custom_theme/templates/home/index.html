@@ -197,45 +197,57 @@
   <div class="row" style="margin-top: 40px;">
     <div class="col-md-9">
       <h2 class="section-title">📊 Recently Updated Datasets</h2>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="custom-card">
-            <h3><a href="/dataset">Sample Dataset 1</a></h3>
-            <p>This is a sample dataset description showing how the custom theme looks with real content.</p>
-            <a href="/dataset" class="custom-btn">View Data</a>
+        <div class="row">
+          {% set recent_datasets = h.custom_get_recent_datasets(3) %}
+          {% for dataset in recent_datasets %}
+          <div class="col-md-4">
+            <div class="custom-card">
+              <h3><a href="{{ h.url_for('dataset.read', id=dataset.name) }}">{{ dataset.title }}</a></h3>
+              <p>{{ dataset.notes[:100] }}{% if dataset.notes|length > 100 %}...{% endif %}</p>
+              <a href="{{ h.url_for('dataset.read', id=dataset.name) }}" class="custom-btn">View Data</a>
+            </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="custom-card">
-            <h3><a href="/dataset">Sample Dataset 2</a></h3>
-            <p>Another sample dataset to demonstrate the beautiful card layout and hover effects.</p>
-            <a href="/dataset" class="custom-btn">View Data</a>
+          {% endfor %}
+          {% if not recent_datasets %}
+          <div class="col-md-4">
+            <div class="custom-card">
+              <h3><a href="{{ h.url_for('dataset.search') }}">Sample Dataset 1</a></h3>
+              <p>This is a sample dataset description showing how the custom theme looks with real content.</p>
+              <a href="{{ h.url_for('dataset.search') }}" class="custom-btn">View Data</a>
+            </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="custom-card">
-            <h3><a href="/dataset">Sample Dataset 3</a></h3>
-            <p>Third sample dataset showing the responsive grid layout and modern styling.</p>
-            <a href="/dataset" class="custom-btn">View Data</a>
+          <div class="col-md-4">
+            <div class="custom-card">
+              <h3><a href="{{ h.url_for('dataset.search') }}">Sample Dataset 2</a></h3>
+              <p>Another sample dataset to demonstrate the beautiful card layout and hover effects.</p>
+              <a href="{{ h.url_for('dataset.search') }}" class="custom-btn">View Data</a>
+            </div>
           </div>
+          <div class="col-md-4">
+            <div class="custom-card">
+              <h3><a href="{{ h.url_for('dataset.search') }}">Sample Dataset 3</a></h3>
+              <p>Third sample dataset showing the responsive grid layout and modern styling.</p>
+              <a href="{{ h.url_for('dataset.search') }}" class="custom-btn">View Data</a>
+            </div>
+          </div>
+          {% endif %}
         </div>
-      </div>
-      <div class="text-center">
-        <a href="/dataset" class="custom-btn">View All Datasets</a>
-      </div>
+        <div class="text-center">
+          <a href="{{ h.url_for('dataset.search') }}" class="custom-btn">View All Datasets</a>
+        </div>
     </div>
 
     <div class="col-md-3">
       <div class="sidebar-box">
         <h3 class="sidebar-title">🏢 Popular Groups</h3>
         <ul class="list-unstyled">
-          <li><a href="/group">Environment</a> <span class="badge">5</span></li>
-          <li><a href="/group">Healthcare</a> <span class="badge">3</span></li>
-          <li><a href="/group">Transport</a> <span class="badge">2</span></li>
-          <li><a href="/group">Education</a> <span class="badge">1</span></li>
+          <li><a href="{{ h.url_for('group.index') }}">Environment</a> <span class="badge">5</span></li>
+          <li><a href="{{ h.url_for('group.index') }}">Healthcare</a> <span class="badge">3</span></li>
+          <li><a href="{{ h.url_for('group.index') }}">Transport</a> <span class="badge">2</span></li>
+          <li><a href="{{ h.url_for('group.index') }}">Education</a> <span class="badge">1</span></li>
         </ul>
         <div class="text-center">
-          <a href="/group" class="btn btn-sm btn-default">View All Groups</a>
+          <a href="{{ h.url_for('group.index') }}" class="btn btn-sm btn-default">View All Groups</a>
         </div>
       </div>
 

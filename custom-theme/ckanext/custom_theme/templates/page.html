@@ -191,6 +191,18 @@
       transition: all 0.3s ease;
       padding: 4px;
       border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-button::before {
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      content: '\f002';
+      font-size: 14px;
     }
 
     .search-button:hover {
@@ -246,11 +258,12 @@
 
     /* Hero Section */
     .hero-section {
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23e6f3ff"/><stop offset="100%" style="stop-color:%23b3d9ff"/></linearGradient><linearGradient id="road" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23f0f0f0"/><stop offset="100%" style="stop-color:%23d0d0d0"/></linearGradient></defs><rect width="1200" height="400" fill="url(%23sky)"/><ellipse cx="600" cy="200" rx="800" ry="150" fill="%23d4e6a0"/><rect x="0" y="300" width="1200" height="100" fill="url(%23road)"/><rect x="0" y="350" width="1200" height="10" fill="white"/><rect x="0" y="360" width="1200" height="10" fill="white"/><rect x="0" y="370" width="1200" height="10" fill="white"/><rect x="0" y="380" width="1200" height="10" fill="white"/><rect x="0" y="390" width="1200" height="10" fill="white"/></svg>');
+      background: linear-gradient(rgba(30, 58, 95, 0.75), rgba(30, 58, 95, 0.75)), 
+                  url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
-      height: 400px;
+      background-repeat: no-repeat;
+      height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -265,20 +278,24 @@
     }
 
     .hero-title {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px 30px;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 30px 40px;
+      border-radius: 12px;
       margin-bottom: 30px;
-      font-size: 28px;
+      font-size: 48px;
       font-weight: 700;
       line-height: 1.3;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .hero-search-container {
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.98);
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .hero-search-title {
@@ -319,6 +336,18 @@
       padding: 8px 12px;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 16px;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-search-button::before {
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      content: '\f002';
       font-size: 16px;
     }
 
@@ -445,6 +474,180 @@
         margin: 0 auto;
       }
     }
+
+    /* Categories Section */
+    .categories-section {
+      background: #f8f9fa;
+      padding: 60px 20px;
+    }
+
+    .categories-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .categories-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 15px;
+    }
+
+    .categories-subtitle {
+      text-align: center;
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      border: 2px solid transparent;
+    }
+
+    .category-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      border-color: #1e3a5f;
+      text-decoration: none;
+    }
+
+    .category-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      border-radius: 50%;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .category-card:hover .category-icon {
+      background: #1e3a5f;
+      border-color: #1e3a5f;
+      transform: scale(1.1);
+    }
+
+    .category-icon::before {
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      font-size: 24px;
+      color: #6c757d;
+      transition: color 0.3s ease;
+    }
+
+    .category-card:hover .category-icon::before {
+      color: white;
+    }
+
+    /* Category Icons */
+    .icon-economy::before { content: '\f201'; }
+    .icon-environment::before { content: '\f0ac'; }
+    .icon-health::before { content: '\f0f1'; }
+    .icon-education::before { content: '\f19d'; }
+    .icon-transport::before { content: '\f1b9'; }
+    .icon-housing::before { content: '\f015'; }
+    .icon-energy::before { content: '\f0e7'; }
+    .icon-technology::before { content: '\f1c0'; }
+    .icon-agriculture::before { content: '\f06c'; }
+    .icon-society::before { content: '\f0c0'; }
+    .icon-government::before { content: '\f1ad'; }
+    .icon-science::before { content: '\f0c3'; }
+    .icon-default::before { content: '\f07c'; }
+
+    .category-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin-bottom: 10px;
+    }
+
+    .category-count {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .view-all-categories {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .view-all-btn {
+      display: inline-block;
+      background: #1e3a5f;
+      color: white;
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 2px solid #1e3a5f;
+    }
+
+    .view-all-btn:hover {
+      background: #2c5aa0;
+      border-color: #2c5aa0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+      text-decoration: none;
+      color: white;
+    }
+
+    /* Dataset Stats Section */
+    .stats-section {
+      background: white;
+      padding: 40px 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      text-align: center;
+    }
+
+    .stat-item {
+      padding: 20px;
+    }
+
+    .stat-number {
+      font-size: 48px;
+      font-weight: 700;
+      color: #1e3a5f;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: #666;
+      font-weight: 500;
+    }
   </style>
 {% endblock %}
 
@@ -475,10 +678,9 @@
           <div class="search-container">
             <form action="{{ h.url_for('dataset.search') }}" method="get">
               <input type="text" name="q" placeholder="Search datasets..." class="search-input">
-              <button type="submit" class="search-button">🔍</button>
+              <button type="submit" class="search-button"></button>
             </form>
           </div>
-          <a href="{{ h.url_for('user.login') }}" class="login-link">Log in</a>
         </div>
       </div>
     </div>
@@ -494,9 +696,7 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <div class="hero-title">
-        Discover, use open data
-      </div>
+     
       <div class="hero-search-container">
         <div class="hero-search-title">
           Search over {{ h.custom_get_total_datasets() }} datasets and {{ h.custom_get_total_datasets() * 2 }} resources
@@ -504,12 +704,110 @@
         <div class="hero-search-box">
           <form action="{{ h.url_for('dataset.search') }}" method="get">
             <input type="text" name="q" placeholder="E.g Environment" class="hero-search-input">
-            <button type="submit" class="hero-search-button">🔍</button>
+            <button type="submit" class="hero-search-button"></button>
           </form>
         </div>
       </div>
     </div>
    
+  </div>
+
+  <!-- Categories Section -->
+  <div class="categories-section">
+    <div class="categories-container">
+      <h2 class="categories-title">Explore by Category</h2>
+      <p class="categories-subtitle">Browse datasets organized by topic</p>
+      
+      <div class="categories-grid">
+        <!-- Get groups/topics from CKAN -->
+        {% set groups = h.get_featured_groups(count=8) %}
+        
+        {% if groups %}
+          {% for group in groups %}
+            <a href="{{ h.url_for('group.read', id=group.name) }}" class="category-card">
+              <div class="category-icon {% if group.name in ['economy', 'finance', 'business'] %}icon-economy{% elif group.name in ['environment', 'climate', 'nature'] %}icon-environment{% elif group.name in ['health', 'healthcare', 'medical'] %}icon-health{% elif group.name in ['education', 'schools', 'learning'] %}icon-education{% elif group.name in ['transport', 'transportation', 'traffic'] %}icon-transport{% elif group.name in ['housing', 'property', 'real-estate'] %}icon-housing{% elif group.name in ['energy', 'power', 'utilities'] %}icon-energy{% elif group.name in ['agriculture', 'farming', 'food'] %}icon-agriculture{% elif group.name in ['technology', 'digital', 'innovation'] %}icon-technology{% elif group.name in ['society', 'community', 'social'] %}icon-society{% elif group.name in ['government', 'public', 'administration'] %}icon-government{% elif group.name in ['science', 'research', 'data'] %}icon-science{% else %}icon-default{% endif %}"></div>
+              <div class="category-name">{{ group.display_name or group.title or group.name }}</div>
+              <div class="category-count">{{ group.package_count or 0 }} datasets</div>
+            </a>
+          {% endfor %}
+        {% else %}
+          <!-- Default categories if no groups exist -->
+          <a href="{{ h.url_for('dataset.search', tags='economy') }}" class="category-card">
+            <div class="category-icon icon-economy"></div>
+            <div class="category-name">Economy</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='environment') }}" class="category-card">
+            <div class="category-icon icon-environment"></div>
+            <div class="category-name">Environment</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='health') }}" class="category-card">
+            <div class="category-icon icon-health"></div>
+            <div class="category-name">Health</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='education') }}" class="category-card">
+            <div class="category-icon icon-education"></div>
+            <div class="category-name">Education</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='transport') }}" class="category-card">
+            <div class="category-icon icon-transport"></div>
+            <div class="category-name">Transport</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='housing') }}" class="category-card">
+            <div class="category-icon icon-housing"></div>
+            <div class="category-name">Housing</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='energy') }}" class="category-card">
+            <div class="category-icon icon-energy"></div>
+            <div class="category-name">Energy</div>
+            <div class="category-count">View datasets</div>
+          </a>
+          
+          <a href="{{ h.url_for('dataset.search', tags='technology') }}" class="category-card">
+            <div class="category-icon icon-technology"></div>
+            <div class="category-name">Technology</div>
+            <div class="category-count">View datasets</div>
+          </a>
+        {% endif %}
+      </div>
+      
+      <div class="view-all-categories">
+        <a href="{{ h.url_for('group.index') }}" class="view-all-btn">View All Categories</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dataset Stats Section -->
+  <div class="stats-section">
+    <div class="stats-container">
+      <div class="stat-item">
+        <span class="stat-number">{{ h.custom_get_total_datasets() }}</span>
+        <span class="stat-label">Datasets</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ h.custom_get_total_datasets() * 2 }}</span>
+        <span class="stat-label">Resources</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ h.get_featured_organizations(count=100)| length }}</span>
+        <span class="stat-label">Organizations</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ h.get_featured_groups(count=100)| length }}</span>
+        <span class="stat-label">Topics</span>
+      </div>
+    </div>
   </div>
 
   <!-- Original CKAN Content -->

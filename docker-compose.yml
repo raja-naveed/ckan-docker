@@ -33,6 +33,8 @@ services:
       - redisnet
     env_file:
       - .env
+    environment:
+      - CKAN__PLUGINS=image_view text_view datatables_view datastore datapusher envvars custom_theme
     depends_on:
       db:
         condition: service_healthy

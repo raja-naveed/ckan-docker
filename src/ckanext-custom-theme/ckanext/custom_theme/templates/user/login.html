@@ -1,0 +1,46 @@
+{% ckan_extends %}
+
+{% block toolbar %}
+<!-- Remove breadcrumb navigation -->
+{% endblock %}
+
+{% block secondary_content %}
+<!-- Completely empty - no secondary sidebar -->
+{% endblock %}
+
+{% block primary_content %}
+  <div class="two-column-login-container">
+    <div class="login-card">
+      <!-- Left Side - Password Recovery (Dark Blue) -->
+      <div class="password-recovery-section">
+        <h3>Forgotten your password?</h3>
+        <p>No problem, use our password recovery form to reset it.</p>
+        <a href="{{ h.url_for('user.request_reset') }}" class="recovery-button">Forgot your password?</a>
+      </div>
+
+      <!-- Right Side - Login Form (White) -->
+      <div class="login-form-section">
+        <h2>Login</h2>
+        <form action="" method="post" class="login-form">
+          <input type="hidden" name="_csrf_token" value="{{ c.csrf_token }}"/>
+          
+          <div class="form-group">
+            <label for="login">Username or Email::</label>
+            <input type="text" id="login" name="login" value="{{ c.login }}" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password::</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          
+          <div class="remember-me">
+            <span>| Remember me :</span>
+          </div>
+          
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

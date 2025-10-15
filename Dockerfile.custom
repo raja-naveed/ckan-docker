@@ -6,13 +6,11 @@ COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/* /docker-entrypoint.d/
 # Apply any patches
 COPY --chown=ckan-sys:ckan-sys ckan/patches /srv/app/patches
 
-# Copy custom theme extension
-COPY --chown=ckan-sys:ckan-sys custom-theme/ckanext /srv/app/src/ckanext-custom-theme/ckanext
-COPY --chown=ckan-sys:ckan-sys custom-theme/setup.py /srv/app/src/ckanext-custom-theme/
+# Copy custom theme extension from src directory
+COPY --chown=ckan-sys:ckan-sys src/ckanext-custom-theme/ckanext /srv/app/src/ckanext-custom-theme/ckanext
+COPY --chown=ckan-sys:ckan-sys src/ckanext-custom-theme/setup.py /srv/app/src/ckanext-custom-theme/
 
-# Copy datawagovautheme extension
-COPY --chown=ckan-sys:ckan-sys ckanext-datawagovautheme/ckanext /srv/app/src/ckanext-datawagovautheme/ckanext
-COPY --chown=ckan-sys:ckan-sys ckanext-datawagovautheme/setup.py /srv/app/src/ckanext-datawagovautheme/
+# Data.gov.au theme extension removed - not needed
 
 # Copy scheming extension
 COPY --chown=ckan-sys:ckan-sys ckanext-scheming/ckanext /srv/app/src/ckanext-scheming/ckanext
@@ -40,10 +38,7 @@ RUN chown -R ckan:ckan-sys /srv/app/src/ckanext-scheming && \
     cd /srv/app/src/ckanext-scheming && \
     pip install -e .
 
-# Install datawagovautheme extension
-RUN chown -R ckan:ckan-sys /srv/app/src/ckanext-datawagovautheme && \
-    cd /srv/app/src/ckanext-datawagovautheme && \
-    pip install -e .
+# Data.gov.au theme installation removed - not needed
 
 USER ckan
 

@@ -1,0 +1,48 @@
+<!-- Custom Header Template - Completely replaces default CKAN header -->
+<div class="custom-header">
+  <!-- Main Header -->
+  <div class="header-top">
+    <div class="header-container">
+      <!-- Left Section - Branding -->
+      <div class="header-branding">
+        <div class="government-emblem"></div>
+        <div class="government-text">
+          <p class="government-label">Snap4IDTCity Data Portal</p>
+        </div>
+      </div>
+
+      <!-- Center Section - Navigation -->
+      <div class="header-navigation">
+        <a href="{{ h.url_for('dataset.search') }}" class="nav-link">Data</a>
+        <a href="{{ h.url_for('group.index') }}" class="nav-link">Topics</a>
+        <a href="{{ h.url_for('organization.index') }}" class="nav-link">Organisations</a>
+        <a href="{{ h.url_for('home.about') }}" class="nav-link">About</a>
+      </div>
+
+      <!-- Right Section - Search and Login -->
+      <div class="header-actions">
+        <div class="search-container">
+          <form action="{{ h.url_for('dataset.search') }}" method="get">
+            <input type="text" name="q" placeholder="Search datasets..." class="search-input">
+            <button type="submit" class="search-button"></button>
+          </form>
+        </div>
+        
+        {% if c.userobj %}
+          <a href="{{ h.url_for('user.read', id=c.userobj.name) }}" class="login-link">
+            {{ c.userobj.display_name }}
+          </a>
+        {% else %}
+          <a href="{{ h.url_for('user.login') }}" class="login-link">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark teal section below header -->
+  <div class="header-bottom">
+    <div class="header-bottom-content">
+      Find Government data
+    </div>
+  </div>
+</div>

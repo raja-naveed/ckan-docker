@@ -1,0 +1,897 @@
+{% ckan_extends %}
+
+{% block styles %}
+  {{ super() }}
+  <style>
+    /* CUSTOM BASE TEMPLATE TEST - IF YOU SEE THIS, BASE TEMPLATE IS LOADING */
+    /* Global Custom Theme Styles */
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    /* Hide default CKAN header elements - More aggressive hiding */
+    .account-masthead,
+    .navbar,
+    .masthead,
+    header.masthead,
+    .account.not-authed,
+    .account.authed {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+
+    /* Global Header Styles - Applied to all pages */
+    .custom-header {
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      z-index: 1000;
+    }
+
+    .header-top {
+      background: white;
+      padding: 15px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Left Section - Branding */
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .government-emblem {
+      width: 60px;
+      height: 60px;
+      background: #1e3a5f;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .government-emblem::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px #1e3a5f;
+    }
+
+    .government-emblem::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 15px;
+      background: white;
+      border-radius: 0 0 15px 15px;
+    }
+
+    .government-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .government-label {
+      font-size: 14px;
+      color: #1e3a5f;
+      font-weight: 500;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .site-title {
+      font-size: 28px;
+      color: #1e3a5f;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    /* Center Section - Navigation */
+    .header-navigation {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: #1e3a5f;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: #2c5aa0;
+      text-decoration: none;
+      background-color: rgba(30, 58, 95, 0.1);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #2c5aa0;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after {
+      width: 80%;
+    }
+
+    /* Right Section - Search and Login */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .search-input {
+      width: 250px;
+      padding: 10px 40px 10px 12px;
+      border: 2px solid #4a90e2;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #2c5aa0;
+      box-shadow: 0 4px 8px rgba(44, 90, 160, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .search-input::placeholder {
+      color: #999;
+      font-style: italic;
+    }
+
+    .search-button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #4a90e2;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 4px;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-button::before {
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      content: '\f002';
+      font-size: 14px;
+    }
+
+    .search-button:hover {
+      color: #2c5aa0;
+      background-color: rgba(44, 90, 160, 0.1);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .login-link {
+      color: #1e3a5f;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+    }
+
+    .login-link:hover {
+      color: #2c5aa0;
+      text-decoration: none;
+      background-color: rgba(30, 58, 95, 0.1);
+      border-color: rgba(30, 58, 95, 0.2);
+    }
+
+    /* Dark teal section below header */
+    .header-bottom {
+      background: #1e3a5f;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-bottom-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .header-container {
+        padding: 0 15px;
+      }
+      
+      .search-input {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+      }
+
+      .header-branding {
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .government-emblem {
+        width: 50px;
+        height: 50px;
+      }
+
+      .government-emblem::before {
+        width: 16px;
+        height: 16px;
+        top: 6px;
+      }
+
+      .government-emblem::after {
+        width: 24px;
+        height: 12px;
+        bottom: 6px;
+      }
+
+      .site-title {
+        font-size: 24px;
+      }
+
+      .header-navigation {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .search-input {
+        width: 250px;
+      }
+
+      .header-actions {
+        flex-direction: row;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .header-bottom {
+        height: 50px;
+      }
+
+      .header-bottom-content {
+        font-size: 16px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-navigation {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .nav-link {
+        text-align: center;
+        width: 100%;
+        padding: 10px;
+      }
+
+      .search-input {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .login-link {
+        text-align: center;
+        width: 100%;
+        max-width: 120px;
+        margin: 0 auto;
+      }
+    }
+
+    /* Custom Footer Styles - Maximum Specificity to Override CKAN Defaults */
+    body .site-footer .custom-footer,
+    body .custom-footer,
+    .site-footer .custom-footer,
+    .custom-footer {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%) !important;
+      background-color: #1e3a5f !important;
+      color: white !important;
+      padding: 60px 0 30px !important;
+      margin-top: 60px !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .custom-footer .footer-main {
+      margin-bottom: 40px !important;
+    }
+
+    .custom-footer .footer-section h5 {
+      color: white !important;
+      font-size: 18px !important;
+      font-weight: 600 !important;
+      margin-bottom: 20px !important;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+      padding-bottom: 10px !important;
+    }
+
+    .custom-footer .footer-links {
+      list-style: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .custom-footer .footer-links li {
+      margin-bottom: 8px !important;
+    }
+
+    .custom-footer .footer-links a {
+      color: rgba(255, 255, 255, 0.9) !important;
+      text-decoration: none !important;
+      font-size: 14px !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .custom-footer .footer-links a:hover {
+      color: white !important;
+      text-decoration: underline !important;
+    }
+
+    .custom-footer .footer-branding {
+      margin-bottom: 20px !important;
+    }
+
+    .custom-footer .footer-logo {
+      display: flex !important;
+      align-items: center !important;
+      gap: 15px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .custom-footer .government-emblem-footer {
+      width: 50px !important;
+      height: 50px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: white !important;
+      font-size: 20px !important;
+      font-weight: bold !important;
+      position: relative !important;
+      overflow: hidden !important;
+      border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .custom-footer .government-emblem-footer::before {
+      content: '' !important;
+      position: absolute !important;
+      top: 6px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 16px !important;
+      height: 16px !important;
+      background: rgba(255, 255, 255, 0.8) !important;
+      border-radius: 50% !important;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .custom-footer .government-emblem-footer::after {
+      content: '' !important;
+      position: absolute !important;
+      bottom: 6px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 24px !important;
+      height: 12px !important;
+      background: rgba(255, 255, 255, 0.8) !important;
+      border-radius: 0 0 12px 12px !important;
+    }
+
+    .custom-footer .footer-text h4 {
+      color: white !important;
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      margin: 0 0 5px 0 !important;
+    }
+
+    .custom-footer .footer-text p {
+      color: rgba(255, 255, 255, 0.8) !important;
+      font-size: 14px !important;
+      margin: 0 !important;
+      line-height: 1.4 !important;
+    }
+
+    .custom-footer .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+      padding-top: 30px !important;
+    }
+
+    .custom-footer .footer-copyright p {
+      color: rgba(255, 255, 255, 0.8) !important;
+      font-size: 14px !important;
+      margin: 0 0 10px 0 !important;
+    }
+
+    .custom-footer .footer-disclaimer {
+      font-size: 12px !important;
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .custom-footer .footer-disclaimer a {
+      color: rgba(255, 255, 255, 0.8) !important;
+      text-decoration: none !important;
+    }
+
+    .custom-footer .footer-disclaimer a:hover {
+      color: white !important;
+      text-decoration: underline !important;
+    }
+
+    .custom-footer .footer-social {
+      text-align: right !important;
+    }
+
+    .custom-footer .social-links {
+      margin-bottom: 15px !important;
+    }
+
+    .custom-footer .social-link {
+      display: inline-block !important;
+      width: 40px !important;
+      height: 40px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 50% !important;
+      color: white !important;
+      text-align: center !important;
+      line-height: 40px !important;
+      margin-left: 10px !important;
+      transition: all 0.3s ease !important;
+      text-decoration: none !important;
+      border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .custom-footer .social-link:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+      transform: translateY(-2px) !important;
+      color: white !important;
+      text-decoration: none !important;
+    }
+
+    .custom-footer .social-link i {
+      font-size: 16px !important;
+    }
+
+    .custom-footer .footer-legal {
+      font-size: 12px !important;
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .custom-footer .legal-link {
+      color: rgba(255, 255, 255, 0.7) !important;
+      text-decoration: none !important;
+      transition: color 0.3s ease !important;
+    }
+
+    .custom-footer .legal-link:hover {
+      color: white !important;
+      text-decoration: underline !important;
+    }
+
+    .custom-footer .separator {
+      margin: 0 8px !important;
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    /* Override default CKAN footer styles */
+    .site-footer {
+      background: transparent !important;
+      border-top: none !important;
+      margin-top: 0 !important;
+    }
+
+    .site-footer .container > *:not(.custom-footer) {
+      display: none !important;
+    }
+    
+    /* Debug: Force footer visibility */
+    .custom-footer {
+      min-height: 200px !important;
+      position: relative !important;
+      z-index: 100 !important;
+    }
+
+    /* Ensure footer text is visible */
+    .custom-footer * {
+      color: white !important;
+    }
+
+    /* Force footer background - Maximum specificity */
+    html body .site-footer .custom-footer,
+    html body .custom-footer,
+    body .site-footer .custom-footer,
+    .site-footer .custom-footer,
+    .custom-footer {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%) !important;
+      background-color: #1e3a5f !important;
+      background-image: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%) !important;
+    }
+
+    /* Override any CKAN default footer styles */
+    .site-footer {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+    }
+
+    /* Force all footer content to be white */
+    .custom-footer,
+    .custom-footer *,
+    .custom-footer h1,
+    .custom-footer h2,
+    .custom-footer h3,
+    .custom-footer h4,
+    .custom-footer h5,
+    .custom-footer p,
+    .custom-footer a,
+    .custom-footer li,
+    .custom-footer span {
+      color: white !important;
+    }
+
+    .custom-footer a:hover {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Homepage Stats Section Styling */
+    .stats-section {
+      background: white;
+      padding: 80px 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .stat-item {
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      border-radius: 16px;
+      border: 1px solid #e8ecf0;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #1e3a5f, #2c5aa0);
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(30, 58, 95, 0.1);
+    }
+
+    .stat-number {
+      font-size: 52px;
+      font-weight: 800;
+      color: #1e3a5f;
+      display: block;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Categories Section Styling */
+    .categories-section {
+      background: #f8f9fa;
+      padding: 80px 0;
+    }
+
+    .categories-section h2 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .categories-section p {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 50px;
+      text-align: center;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .view-all-categories {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%);
+      color: white;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+      color: white;
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid #e8ecf0;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1e3a5f, #2c5aa0);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .category-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(30, 58, 95, 0.15);
+      text-decoration: none;
+    }
+
+    .category-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .category-card h3 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin: 20px 0 12px 0;
+    }
+
+    .category-card p {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+
+    .category-link {
+      color: #1e3a5f;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .category-link:hover {
+      text-decoration: underline;
+    }
+
+    .category-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 50%;
+      border: 3px solid #e9ecef;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category-icon::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%);
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.3s ease;
+      z-index: 1;
+    }
+
+    .category-card:hover .category-icon {
+      border-color: #1e3a5f;
+      transform: scale(1.05);
+    }
+
+    .category-card:hover .category-icon::after {
+      transform: scale(1);
+    }
+
+    .category-icon::before {
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      font-size: 26px;
+      color: #1e3a5f;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .category-card:hover .category-icon::before {
+      color: white;
+      transform: scale(1.1);
+    }
+
+    /* Category Icons */
+    .icon-economy::before { content: '\f201'; }
+    .icon-environment::before { content: '\f0ac'; }
+    .icon-health::before { content: '\f0f1'; }
+    .icon-education::before { content: '\f19d'; }
+    .icon-transport::before { content: '\f1b9'; }
+    .icon-housing::before { content: '\f015'; }
+    .icon-energy::before { content: '\f0e7'; }
+    .icon-technology::before { content: '\f1c0'; }
+  </style>
+
+  <script>
+    // Force footer styling with JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+      const footer = document.querySelector('.custom-footer');
+      if (footer) {
+        footer.style.setProperty('background', 'linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%)', 'important');
+        footer.style.setProperty('background-color', '#1e3a5f', 'important');
+        footer.style.setProperty('color', 'white', 'important');
+        
+        // Force all text to be white
+        const allElements = footer.querySelectorAll('*');
+        allElements.forEach(function(element) {
+          element.style.setProperty('color', 'white', 'important');
+        });
+      }
+    });
+  </script>
+{% endblock %}
+
+{% block bodytag %} data-site-root="{{ h.url_for('home.index', locale='default', qualified=true) }}" data-locale-root="{{ h.url_for('home.index', qualified=true) }}" {% endblock %}
+
+

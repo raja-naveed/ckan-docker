@@ -189,7 +189,7 @@ According to the [CKAN template documentation](https://docs.ckan.org/en/2.9/them
 
 {% block primary_content %}
   <div class="hero">
-    <h1>{{ _('Welcome to Our Data Portal') }}</h1>
+    <h1>{{ _('Welcome to Our Snap4IDTCity Data Portal') }}</h1>
     <p>{{ _('Discover and explore open datasets') }}</p>
   </div>
   
@@ -612,7 +612,7 @@ class PortalThemePlugin(plugins.SingletonPlugin):
 {% block primary_content %}
   <div class="hero-banner">
     <div class="container">
-      <h1>{{ _('Welcome to Our Data Portal') }}</h1>
+      <h1>{{ _('Welcome to Our Snap4IDTCity Data Portal') }}</h1>
       <p class="lead">{{ _('Explore, download, and share open data') }}</p>
     </div>
   </div>

@@ -1,0 +1,165 @@
+<!-- Custom Footer Template - Completely replaces default CKAN footer -->
+<style>
+  /* Force footer styling with maximum specificity */
+  body .site-footer .custom-footer,
+  body .custom-footer,
+  .site-footer .custom-footer,
+  .custom-footer {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%) !important;
+    background-color: #1e3a5f !important;
+    color: white !important;
+    padding: 60px 0 30px !important;
+    margin-top: 0px !important;
+    min-height: 200px !important;
+    border: none !important;
+    box-shadow: none !important;
+    position: relative !important;
+    z-index: 100 !important;
+  }
+
+  .custom-footer * {
+    color: white !important;
+  }
+
+  .custom-footer .footer-section h5 {
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 20px !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    padding-bottom: 10px !important;
+  }
+
+  .custom-footer .footer-links a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+    font-size: 14px !important;
+  }
+
+  .custom-footer .footer-links a:hover {
+    color: white !important;
+    text-decoration: underline !important;
+  }
+
+  .custom-footer .footer-text h4 {
+    color: white !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+  }
+
+  .custom-footer .footer-text p {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .custom-footer .footer-copyright p {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .custom-footer .footer-disclaimer {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .custom-footer .footer-disclaimer a {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .custom-footer .social-link {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .custom-footer .social-link:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+
+  .custom-footer .legal-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .custom-footer .legal-link:hover {
+    color: white !important;
+  }
+
+  .custom-footer .separator {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+</style>
+
+<div class="custom-footer" style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%) !important; color: white !important; padding: 60px 0 30px !important; margin-top: 60px !important; min-height: 200px !important;">
+  <div class="container">
+    <!-- Main Footer Content -->
+    <div class="row footer-main">
+      <div class="col-md-4 footer-section">
+        <div class="footer-branding">
+          <div class="footer-logo">
+            <div class="government-emblem-footer"></div>
+            <div class="footer-text">
+              <h4>Snap4IDTCity Data Portal</h4>
+              <p>{{ g.site_description or 'Providing access to government data' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 footer-section">
+        <h5>Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="{{ h.url_for('dataset.search') }}">Browse Datasets</a></li>
+          <li><a href="{{ h.url_for('organization.index') }}">Organizations</a></li>
+          <li><a href="{{ h.url_for('group.index') }}">Topics</a></li>
+          <li><a href="{{ h.url_for('home.about') }}">About</a></li>
+          <li><a href="{{ h.url_for('user.login') }}">Login</a></li>
+        </ul>
+      </div>
+      
+      <div class="col-md-4 footer-section">
+        <h5>Resources</h5>
+        <ul class="footer-links">
+          <li><a href="{{ h.url_for('home.about') }}">Documentation</a></li>
+          <li><a href="http://docs.ckan.org/en/latest/api/" target="_blank">API Documentation</a></li>
+          <li><a href="https://github.com/ckan/ckan" target="_blank">GitHub</a></li>
+          <li><a href="https://ckan.org/" target="_blank">CKAN.org</a></li>
+          <li><a href="{{ h.url_for('home.about') }}">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Footer Bottom -->
+    <div class="row footer-bottom">
+      <div class="col-md-6">
+        <div class="footer-copyright">
+          <p>&copy; {{ h.get_current_year() }} {{ g.site_title or 'Snap4IDTCity Data Portal' }}. All rights reserved.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="footer-social">
+          <div class="social-links">
+            <a href="https://twitter.com" class="social-link" title="Twitter" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://linkedin.com" class="social-link" title="LinkedIn" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com" class="social-link" title="GitHub" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:info@dataportal.gov" class="social-link" title="Email" target="_blank">
+              <i class="fas fa-envelope"></i>
+            </a>
+          </div>
+          
+          <div class="footer-legal">
+            <a href="#" class="legal-link">Privacy Policy</a>
+            <span class="separator">|</span>
+            <a href="#" class="legal-link">Terms of Service</a>
+            <span class="separator">|</span>
+            <a href="#" class="legal-link">Accessibility</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -40,5 +40,16 @@ RUN chown -R ckan:ckan-sys /srv/app/src/ckanext-scheming && \
 
 # Data.gov.au theme installation removed - not needed
 
+# Install map viewer extensions and data loading extensions
+RUN pip install ckanext-geoview && \
+    pip install ckanext-pdfview && \
+    pip install ckanext-xloader && \
+    pip install messytables && \
+    pip install tabulator && \
+    pip install "ckanapi>=4.3" && \
+    pip install unidecode && \
+    pip install psycopg2 && \
+    pip install requests[security]
+
 USER ckan
 

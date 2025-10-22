@@ -34,7 +34,18 @@ services:
     env_file:
       - .env
     environment:
-      - CKAN__PLUGINS=image_view text_view datatables_view datastore datapusher envvars custom_theme
+      - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme
+      - CKANEXT__GEOVIEW__GEOJSON__MAX_FILE_SIZE=100000000
+      - CKANEXT__GEOVIEW__OL_VIEWER__FORMATS=wms wfs geojson gml kml
+      - CKANEXT__SPATIAL__COMMON_MAP__TYPE=custom
+      - CKANEXT__SPATIAL__COMMON_MAP__CUSTOM__URL=https://tile.openstreetmap.org/{z}/{x}/{y}.png
+      - CKANEXT__SPATIAL__COMMON_MAP__ATTRIBUTION=
+      - CKANEXT__XLOADER__API_TOKEN=xxx
+      - CKANEXT__XLOADER__JOBS__DB_URI=postgresql://ckandbuser:ckandbpass@db:5432/ckandb
+      - CKAN__VIEWS__DEFAULT_VIEWS=image_view text_view datatables_view pdf_view geo_view geojson_view
+      - CKAN__PREVIEW__DIRECT=True
+      - CKAN__PREVIEW__LOADABLE=html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json
+      - CKAN__RESOURCE_PROXY__MAX_FILE_SIZE=50000000
     depends_on:
       db:
         condition: service_healthy
@@ -57,7 +68,12 @@ services:
     networks:
       - ckannet
       - dbnet
-    image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
+    build:
+      context: datapusher/
+    environment:
+      - DATAPUSHER_SSL_VERIFY=0
+      - DATAPUSHER_REWRITE_URL=True
+      - DATAPUSHER_LOG_LEVEL=DEBUG
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]

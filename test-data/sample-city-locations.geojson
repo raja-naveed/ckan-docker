@@ -1,0 +1,82 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "City Hall",
+        "type": "Government Building",
+        "address": "123 Main Street",
+        "capacity": 500,
+        "year_built": 1915
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0060, 40.7128]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Central Park",
+        "type": "Park",
+        "area_acres": 843,
+        "visitors_annual": 42000000,
+        "year_established": 1858
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-73.9654, 40.7829]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Public Library Main Branch",
+        "type": "Library",
+        "books": 55000000,
+        "branches": 92,
+        "year_founded": 1895
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-73.9822, 40.7532]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Metropolitan Museum of Art",
+        "type": "Museum",
+        "collections": 2000000,
+        "year_founded": 1870,
+        "visitors_annual": 7000000
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-73.9632, 40.7794]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Downtown Business District",
+        "type": "Commercial Zone",
+        "companies": 5000,
+        "employees": 250000,
+        "zoning": "C-1"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-74.0170, 40.7050],
+          [-73.9950, 40.7050],
+          [-73.9950, 40.7200],
+          [-74.0170, 40.7200],
+          [-74.0170, 40.7050]
+        ]]
+      }
+    }
+  ]
+}
+

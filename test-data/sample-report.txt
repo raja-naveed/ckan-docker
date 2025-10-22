@@ -1,0 +1,47 @@
+# City Data Portal - Annual Report 2024
+
+## Executive Summary
+
+This report summarizes the key achievements and metrics for the Snap4IDTCity Data Portal during the 2024 fiscal year.
+
+## Key Metrics
+
+- Total Datasets Published: 150
+- Total Downloads: 25,000
+- Active Users: 1,200
+- API Requests: 500,000
+- Data Coverage: 98% of city departments
+
+## Department Participation
+
+1. Education - 35 datasets
+2. Healthcare - 28 datasets
+3. Transportation - 22 datasets
+4. Public Safety - 20 datasets
+5. Parks & Recreation - 15 datasets
+6. Administration - 12 datasets
+7. Technology - 10 datasets
+8. Other Departments - 8 datasets
+
+## Geographic Data
+
+Published 45 geographic datasets including:
+- City boundaries
+- School locations
+- Public transit routes
+- Park boundaries
+- Infrastructure maps
+
+## Future Plans
+
+1. Expand to 200+ datasets in 2025
+2. Add real-time data feeds
+3. Implement advanced visualizations
+4. Mobile application development
+5. API expansion
+
+## Contact
+
+For more information, visit https://data.snap4idt.city
+Email: opendata@snap4idt.city
+

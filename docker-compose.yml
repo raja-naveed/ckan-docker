@@ -12,14 +12,14 @@ services:
       context: nginx/
       dockerfile: Dockerfile
     networks:
-      - webnet
       - ckannet
     depends_on:
       ckan:
         condition: service_healthy
     ports:
-      - "0.0.0.0:${NGINX_SSLPORT_HOST}:${NGINX_SSLPORT}"
-    
+      - "0.0.0.0:8443:443"
+    restart: unless-stopped
+
   ckan:
     build:
       context: .
@@ -34,7 +34,7 @@ services:
     env_file:
       - .env
     environment:
-      - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme
+      - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme saml2auth
       - CKANEXT__GEOVIEW__GEOJSON__MAX_FILE_SIZE=100000000
       - CKANEXT__GEOVIEW__OL_VIEWER__FORMATS=wms wfs geojson gml kml
       - CKANEXT__SPATIAL__COMMON_MAP__TYPE=custom
@@ -46,6 +46,20 @@ services:
       - CKAN__PREVIEW__DIRECT=True
       - CKAN__PREVIEW__LOADABLE=html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json
       - CKAN__RESOURCE_PROXY__MAX_FILE_SIZE=50000000
+      # SAML2 Authentication with Keycloak
+      - CKANEXT__SAML2AUTH__IDP_METADATA__LOCATION=remote
+      - CKANEXT__SAML2AUTH__IDP_METADATA__REMOTE_URL=https://auth.idtcities.com/realms/IdtCities/protocol/saml/descriptor
+      - CKANEXT__SAML2AUTH__USER_FIRSTNAME=urn:oid:2.5.4.42
+      - CKANEXT__SAML2AUTH__USER_LASTNAME=urn:oid:2.5.4.4
+      - CKANEXT__SAML2AUTH__USER_FULLNAME=name
+      - CKANEXT__SAML2AUTH__USER_EMAIL=urn:oid:1.2.840.113549.1.9.1
+      - CKANEXT__SAML2AUTH__ENTITY_ID=https://localhost:8443/saml2/metadata
+      - CKANEXT__SAML2AUTH__ACS_ENDPOINT=/saml2/acs
+      - CKANEXT__SAML2AUTH__ENABLE_CKAN_INTERNAL_LOGIN=false
+      - CKANEXT__SAML2AUTH__WANT_RESPONSE_SIGNED=false
+      - CKANEXT__SAML2AUTH__WANT_ASSERTIONS_SIGNED=false
+      - CKANEXT__SAML2AUTH__ASSERTION_CONSUMER_SERVICE_BINDING=urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+      - CKANEXT__SAML2AUTH__SP__NAME_ID_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
     depends_on:
       db:
         condition: service_healthy
@@ -63,7 +77,7 @@ services:
       interval: 60s
       timeout: 10s
       retries: 3
-    
+
   datapusher:
     networks:
       - ckannet
@@ -121,7 +135,6 @@ services:
       test: ["CMD", "redis-cli", "-e", "QUIT"]
     
 networks:
-  webnet:
   ckannet:
   solrnet:
     internal: true

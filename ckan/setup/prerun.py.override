@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import subprocess
 import psycopg2
@@ -26,6 +26,27 @@ def update_plugins():
     cmd = ["ckan", "config-tool", ckan_ini, "ckan.plugins = {}".format(plugins)]
     subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     print("[prerun] Plugins set.")
+
+
+def update_saml2_config():
+    """Configure SAML2 authentication settings"""
+    # SAML2 attribute mappings - X500 mappers use different attribute names
+    saml2_config = {
+        "ckanext.saml2auth.user_email": "urn:oid:1.2.840.113549.1.9.1",
+        "ckanext.saml2auth.user_firstname": "urn:oid:2.5.4.42",
+        "ckanext.saml2auth.user_lastname": "urn:oid:2.5.4.4"
+    }
+    
+    print("[prerun] Configuring SAML2 authentication...")
+    for key, value in saml2_config.items():
+        try:
+            cmd = ["ckan", "config-tool", ckan_ini, "{}={}".format(key, value)]
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+            print("[prerun] Set {} = {}".format(key, value))
+        except subprocess.CalledProcessError as e:
+            print("[prerun] Warning: Could not set {}: {}".format(key, str(e)))
+    
+    print("[prerun] SAML2 configuration complete.")
 
 
 def check_main_db_connection(retry=None):
@@ -205,6 +226,7 @@ if __name__ == "__main__":
         check_main_db_connection()
         init_db()
         update_plugins()
+        update_saml2_config()
         check_datastore_db_connection()
         init_datastore_db()
         check_solr_connection()

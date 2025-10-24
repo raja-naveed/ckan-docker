@@ -29,11 +29,36 @@
         </div>
         
         {% if c.userobj %}
-          <a href="{{ h.url_for('user.read', id=c.userobj.name) }}" class="login-link">
-            {{ c.userobj.display_name }}
-          </a>
+          <!-- User Dropdown Menu -->
+          <div class="user-dropdown">
+            <button class="user-menu-toggle" onclick="toggleUserMenu()">
+              <span class="user-name">{{ c.userobj.display_name }}</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="user-menu" id="userMenu">
+              <a href="{{ h.url_for('user.read', id=c.userobj.name) }}" class="menu-item">
+                <span class="menu-icon">👤</span> My Profile
+              </a>
+              <a href="{{ h.url_for('dashboard.datasets') }}" class="menu-item">
+                <span class="menu-icon">📊</span> My Datasets
+              </a>
+              <a href="{{ h.url_for('dashboard.organizations') }}" class="menu-item">
+                <span class="menu-icon">🏢</span> My Organizations
+              </a>
+              <a href="{{ h.url_for('dataset.new') }}" class="menu-item">
+                <span class="menu-icon">➕</span> Create Dataset
+              </a>
+              <a href="{{ h.url_for('user.edit', id=c.userobj.name) }}" class="menu-item">
+                <span class="menu-icon">⚙️</span> Settings
+              </a>
+              <div class="menu-divider"></div>
+              <a href="{{ h.url_for('user.logout') }}" class="menu-item logout">
+                <span class="menu-icon">🚪</span> Logout
+              </a>
+            </div>
+          </div>
         {% else %}
-          <a href="{{ h.url_for('user.login') }}" class="login-link">Login</a>
+          <a href="{{ h.url_for('user.saml2login') }}" class="login-link">Login</a>
         {% endif %}
       </div>
     </div>
@@ -46,3 +71,137 @@
     </div>
   </div>
 </div>
+
+<!-- User Dropdown JavaScript -->
+<script>
+function toggleUserMenu() {
+  const menu = document.getElementById('userMenu');
+  const isVisible = menu.style.display === 'block';
+  
+  // Close all other dropdowns
+  document.querySelectorAll('.user-menu').forEach(m => {
+    m.style.display = 'none';
+  });
+  
+  // Toggle current menu
+  menu.style.display = isVisible ? 'none' : 'block';
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const dropdown = document.querySelector('.user-dropdown');
+  const menu = document.getElementById('userMenu');
+  
+  if (dropdown && !dropdown.contains(event.target)) {
+    menu.style.display = 'none';
+  }
+});
+</script>
+
+<!-- User Dropdown CSS -->
+<style>
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-menu-toggle {
+  background: #2c5aa0;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.user-menu-toggle:hover {
+  background: #1e3f73;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.3s;
+}
+
+.user-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 200px;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+.user-menu.show {
+  display: block;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+  font-size: 14px;
+}
+
+.menu-item:hover {
+  background-color: #f8f9fa;
+  color: #2c5aa0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item.logout {
+  color: #dc3545;
+}
+
+.menu-item.logout:hover {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.menu-icon {
+  margin-right: 8px;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 4px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-menu {
+    right: -50px;
+    min-width: 180px;
+  }
+  
+  .menu-item {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+</style>

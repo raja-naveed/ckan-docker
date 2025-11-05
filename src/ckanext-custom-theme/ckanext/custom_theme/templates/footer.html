@@ -85,6 +85,35 @@
   .custom-footer .separator {
     color: rgba(255, 255, 255, 0.5) !important;
   }
+
+  /* Footer Logo Styling */
+  .footer-logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    margin-right: 15px;
+  }
+
+  .footer-logo-link:hover {
+    opacity: 0.8;
+  }
+
+  .footer-logo-img {
+    height: 60px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Responsive footer logo */
+  @media (max-width: 768px) {
+    .footer-logo-img {
+      height: 45px;
+      max-width: 150px;
+    }
+  }
 </style>
 
 <div class="custom-footer" style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 100%) !important; color: white !important; padding: 60px 0 30px !important; margin-top: 60px !important; min-height: 200px !important;">
@@ -94,7 +123,9 @@
       <div class="col-md-4 footer-section">
         <div class="footer-branding">
           <div class="footer-logo">
-            <div class="government-emblem-footer"></div>
+            <a href="{{ h.url_for('home.index') }}" class="footer-logo-link">
+              <img src="https://home.idtcities.com/assets/IdtCitiesLogoWhite.png" alt="IdtCities Logo" class="footer-logo-img">
+            </a>
             <div class="footer-text">
               <h4>Snap4IDTCity Data Portal</h4>
               <p>{{ g.site_description or 'Providing access to government data' }}</p>

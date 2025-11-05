@@ -36,58 +36,96 @@
     </div>
   </div>
 
-  <!-- Categories Section -->
+  <!-- Categories Section - Dynamic -->
   <div class="categories-section">
     <div class="container">
       <h2>Explore by Category</h2>
       <p>Browse datasets organized by topic</p>
       <div class="categories-grid">
-        <a href="{{ h.url_for('group.read', id='economy') }}" class="category-card">
-          <div class="category-icon icon-economy"></div>
-          <h3>Economy</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='environment') }}" class="category-card">
-          <div class="category-icon icon-environment"></div>
-          <h3>Environment</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='health') }}" class="category-card">
-          <div class="category-icon icon-health"></div>
-          <h3>Health</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='education') }}" class="category-card">
-          <div class="category-icon icon-education"></div>
-          <h3>Education</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='transport') }}" class="category-card">
-          <div class="category-icon icon-transport"></div>
-          <h3>Transport</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='housing') }}" class="category-card">
-          <div class="category-icon icon-housing"></div>
-          <h3>Housing</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='energy') }}" class="category-card">
-          <div class="category-icon icon-energy"></div>
-          <h3>Energy</h3>
-          <p>View datasets</p>
-        </a>
-        <a href="{{ h.url_for('group.read', id='technology') }}" class="category-card">
-          <div class="category-icon icon-technology"></div>
-          <h3>Technology</h3>
-          <p>View datasets</p>
-        </a>
+        {% set groups = h.custom_get_groups_with_counts(9) %}
+        {% if groups %}
+          {% for group in groups %}
+            <a href="{{ h.url_for('group.read', id=group.id) }}" class="category-card">
+              {% if group.image_url %}
+                <img src="{{ group.image_url }}" alt="{{ group.title }}" class="category-image">
+              {% else %}
+                <div class="category-icon icon-default"></div>
+              {% endif %}
+              <h3>{{ group.title }}</h3>
+              <p>{{ group.package_count }} dataset{{ 's' if group.package_count != 1 else '' }}</p>
+            </a>
+          {% endfor %}
+        {% else %}
+          <!-- Fallback to default categories if no groups exist -->
+          <a href="{{ h.url_for('group.index') }}" class="category-card">
+            <div class="category-icon icon-default"></div>
+            <h3>Create Categories</h3>
+            <p>Start organizing your data</p>
+          </a>
+        {% endif %}
       </div>
       <div class="view-all-categories">
         <a href="{{ h.url_for('group.index') }}" class="btn btn-primary">View All Categories</a>
       </div>
     </div>
   </div>
+
+  <!-- Featured Datasets Section -->
+  {% set featured_datasets = h.custom_get_featured_datasets(6) %}
+  {% if featured_datasets %}
+  <div class="featured-datasets-section">
+    <div class="container">
+      <h2>Featured Datasets</h2>
+      <p>Discover our most popular and important datasets</p>
+      <div class="datasets-grid">
+        {% for dataset in featured_datasets %}
+          <div class="dataset-card">
+            <div class="dataset-header">
+              <h3><a href="{{ h.url_for('dataset.read', id=dataset.name) }}">{{ dataset.title }}</a></h3>
+              {% if dataset.organization %}
+                <span class="dataset-org">{{ dataset.organization.title }}</span>
+              {% endif %}
+            </div>
+            <p class="dataset-description">{{ dataset.notes | truncate(120) }}</p>
+            <div class="dataset-footer">
+              <span class="dataset-resources">{{ dataset.num_resources }} resource{{ 's' if dataset.num_resources != 1 else '' }}</span>
+              <a href="{{ h.url_for('dataset.read', id=dataset.name) }}" class="dataset-link">View →</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="view-all-datasets">
+        <a href="{{ h.url_for('dataset.search') }}" class="btn btn-outline">View All Datasets</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent Datasets Section -->
+  {% set recent_datasets = h.custom_get_recent_datasets(6) %}
+  {% if recent_datasets %}
+  <div class="recent-datasets-section">
+    <div class="container">
+      <h2>Recently Updated</h2>
+      <p>Latest datasets added to the portal</p>
+      <div class="datasets-grid">
+        {% for dataset in recent_datasets %}
+          <div class="dataset-card">
+            <div class="dataset-header">
+              <h3><a href="{{ h.url_for('dataset.read', id=dataset.name) }}">{{ dataset.title }}</a></h3>
+              <span class="dataset-date">{{ h.render_datetime(dataset.metadata_modified, date_format='%b %d, %Y') }}</span>
+            </div>
+            <p class="dataset-description">{{ dataset.notes | truncate(120) }}</p>
+            <div class="dataset-footer">
+              <span class="dataset-resources">{{ dataset.num_resources }} resource{{ 's' if dataset.num_resources != 1 else '' }}</span>
+              <a href="{{ h.url_for('dataset.read', id=dataset.name) }}" class="dataset-link">View →</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Dataset Stats Section -->
   <div class="stats-section">
@@ -98,7 +136,7 @@
           <span class="stat-label">Datasets</span>
         </div>
         <div class="stat-item">
-          <div class="stat-number">{{ h.custom_get_total_datasets() * 2 }}</div>
+          <div class="stat-number">{{ h.custom_get_total_resources() }}</div>
           <span class="stat-label">Resources</span>
         </div>
         <div class="stat-item">
@@ -797,6 +835,195 @@
       box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
       text-decoration: none;
       color: white;
+    }
+
+    /* Category Image Styling */
+    .category-image {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .category-card:hover .category-image {
+      border-color: #1e3a5f;
+      transform: scale(1.1);
+    }
+
+    /* Featured & Recent Datasets Sections */
+    .featured-datasets-section,
+    .recent-datasets-section {
+      padding: 80px 0;
+      background: white;
+    }
+
+    .featured-datasets-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    }
+
+    .featured-datasets-section h2,
+    .recent-datasets-section h2 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .featured-datasets-section p,
+    .recent-datasets-section p {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 50px;
+      text-align: center;
+    }
+
+    .datasets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .dataset-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dataset-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      border-color: #1e3a5f;
+    }
+
+    .dataset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      gap: 15px;
+    }
+
+    .dataset-header h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e3a5f;
+      flex: 1;
+    }
+
+    .dataset-header h3 a {
+      color: #1e3a5f;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .dataset-header h3 a:hover {
+      color: #2c5aa0;
+      text-decoration: underline;
+    }
+
+    .dataset-org {
+      font-size: 12px;
+      color: #666;
+      background: #f8f9fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .dataset-date {
+      font-size: 12px;
+      color: #999;
+      white-space: nowrap;
+    }
+
+    .dataset-description {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .dataset-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .dataset-resources {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .dataset-link {
+      color: #2c5aa0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .dataset-link:hover {
+      color: #1e3a5f;
+      text-decoration: none;
+      transform: translateX(5px);
+    }
+
+    .view-all-datasets {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: #1e3a5f;
+      padding: 15px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      border: 2px solid #1e3a5f;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+      text-decoration: none;
+    }
+
+    /* Responsive adjustments for new sections */
+    @media (max-width: 768px) {
+      .datasets-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .featured-datasets-section h2,
+      .recent-datasets-section h2 {
+        font-size: 28px;
+      }
+
+      .dataset-card {
+        padding: 20px;
+      }
     }
 
     /* Dataset Stats Section */

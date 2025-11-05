@@ -5,7 +5,9 @@
     <div class="header-container">
       <!-- Left Section - Branding -->
       <div class="header-branding">
-        <div class="government-emblem"></div>
+        <a href="{{ h.url_for('home.index') }}" class="logo-link">
+          <img src="https://home.idtcities.com/assets/IdtCitiesLogoWhite.png" alt="IdtCities Logo" class="header-logo">
+        </a>
         <div class="government-text">
           <p class="government-label">Snap4IDTCity Data Portal</p>
         </div>
@@ -58,7 +60,7 @@
             </div>
           </div>
         {% else %}
-          <a href="{{ h.url_for('user.saml2login') }}" class="login-link">Login</a>
+          <a href="/user/saml2login" class="login-link">Login</a>
         {% endif %}
       </div>
     </div>
@@ -192,6 +194,32 @@ document.addEventListener('click', function(event) {
   margin: 4px 0;
 }
 
+/* Header Logo Styling */
+.header-branding {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
+}
+
+.header-logo {
+  height: 50px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  display: block;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .user-menu {
@@ -202,6 +230,15 @@ document.addEventListener('click', function(event) {
   .menu-item {
     padding: 10px 12px;
     font-size: 13px;
+  }
+  
+  .header-logo {
+    height: 40px;
+    max-width: 150px;
+  }
+  
+  .government-label {
+    font-size: 14px;
   }
 }
 </style>

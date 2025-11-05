@@ -1,13 +1,13 @@
 # Custom theme for CKAN
-import ckan.plugins as plugins
+import ckan.plugins as ckan_plugins
 import ckan.plugins.toolkit as toolkit
 from .plugins.saml2_redirect import Saml2RedirectPlugin
 
-class CustomThemePlugin(plugins.SingletonPlugin):
+class CustomThemePlugin(ckan_plugins.SingletonPlugin):
     """Custom theme plugin with SAML2 redirect"""
     
-    plugins.implements(plugins.IConfigurer)
-    plugins.implements(plugins.ITemplateHelpers)
+    ckan_plugins.implements(ckan_plugins.IConfigurer)
+    ckan_plugins.implements(ckan_plugins.ITemplateHelpers)
     
     def update_config(self, config):
         """Update CKAN config"""

@@ -17,6 +17,6 @@ class Saml2RedirectPlugin(plugins.SingletonPlugin):
         @blueprint.route('/user/login')
         def redirect_to_saml2():
             """Redirect /user/login to SAML2 login"""
-            return redirect(url_for('user.saml2login'))
+            return redirect('/user/saml2login')
         
         return blueprint

@@ -18,6 +18,9 @@ class CustomThemePlugin(plugins.SingletonPlugin):
             'custom_get_recent_datasets': self._get_recent_datasets,
             'custom_get_organization_count': self._get_organization_count,
             'custom_get_group_count': self._get_group_count,
+            'custom_get_groups_with_counts': self._get_groups_with_counts,
+            'custom_get_popular_datasets': self._get_popular_datasets,
+            'custom_get_total_resources': self._get_total_resources,
             'get_current_year': self._get_current_year,
         }
 
@@ -70,4 +73,68 @@ class CustomThemePlugin(plugins.SingletonPlugin):
     def _get_current_year(self):
         """Get current year for copyright"""
         return datetime.datetime.now().year
+
+    def _get_groups_with_counts(self, limit=9):
+        """Get groups with their dataset counts for homepage"""
+        try:
+            groups = toolkit.get_action('group_list')({}, {
+                'all_fields': True,
+                'sort': 'package_count desc',
+                'limit': limit
+            })
+            
+            # Get dataset count for each group
+            result = []
+            for group in groups:
+                try:
+                    group_detail = toolkit.get_action('group_show')({}, {
+                        'id': group['id'],
+                        'include_datasets': False
+                    })
+                    result.append({
+                        'id': group['id'],
+                        'name': group['name'],
+                        'title': group.get('title', group['name']),
+                        'description': group.get('description', ''),
+                        'package_count': group_detail.get('package_count', 0),
+                        'image_url': group_detail.get('image_url', '')
+                    })
+                except Exception:
+                    result.append({
+                        'id': group['id'],
+                        'name': group['name'],
+                        'title': group.get('title', group['name']),
+                        'description': group.get('description', ''),
+                        'package_count': 0,
+                        'image_url': ''
+                    })
+            
+            return result
+        except Exception:
+            return []
+
+    def _get_popular_datasets(self, limit=6):
+        """Get popular datasets based on views/downloads"""
+        try:
+            result = toolkit.get_action('package_search')({}, {
+                'rows': limit,
+                'sort': 'views_recent desc, metadata_modified desc'
+            })
+            return result.get('results', [])
+        except Exception:
+            # Fallback to recently modified
+            return self._get_recent_datasets(limit)
+
+    def _get_total_resources(self):
+        """Get total number of resources"""
+        try:
+            result = toolkit.get_action('package_search')({}, {
+                'include_private': False
+            })
+            total = 0
+            for dataset in result.get('results', []):
+                total += dataset.get('num_resources', 0)
+            return total
+        except Exception:
+            return 0
 

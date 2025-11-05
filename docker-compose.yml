@@ -1,24 +1,10 @@
 volumes:
   ckan_storage:
-  pg_data:
   solr_data:
   pip_cache:
   site_packages:
 
 services:
-
-  nginx:
-    build:
-      context: nginx/
-      dockerfile: Dockerfile
-    networks:
-      - ckannet
-    depends_on:
-      ckan:
-        condition: service_healthy
-    ports:
-      - "0.0.0.0:8443:443"
-    restart: unless-stopped
 
   ckan:
     build:
@@ -27,26 +13,23 @@ services:
       args:
         - TZ=${TZ}
     networks:
-      - ckannet
-      - dbnet
-      - solrnet
-      - redisnet
+      - s4idtcities        # ✅ use your existing network
     env_file:
       - .env
     environment:
+      # ✅ Point CKAN to existing Postgres and Redis within s4idtcities network
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://readonlyuser:readonlypass@keycloak_postgres:5432/datastore
+      - CKAN_REDIS_URL=redis://redis:6379/0
+
+      # ✅ Plugins and configuration
       - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme saml2auth
-      - CKANEXT__GEOVIEW__GEOJSON__MAX_FILE_SIZE=100000000
-      - CKANEXT__GEOVIEW__OL_VIEWER__FORMATS=wms wfs geojson gml kml
-      - CKANEXT__SPATIAL__COMMON_MAP__TYPE=custom
-      - CKANEXT__SPATIAL__COMMON_MAP__CUSTOM__URL=https://tile.openstreetmap.org/{z}/{x}/{y}.png
-      - CKANEXT__SPATIAL__COMMON_MAP__ATTRIBUTION=
-      - CKANEXT__XLOADER__API_TOKEN=xxx
-      - CKANEXT__XLOADER__JOBS__DB_URI=postgresql://ckandbuser:ckandbpass@db:5432/ckandb
+      - CKANEXT__XLOADER__JOBS__DB_URI=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
       - CKAN__VIEWS__DEFAULT_VIEWS=image_view text_view datatables_view pdf_view geo_view geojson_view
-      - CKAN__PREVIEW__DIRECT=True
-      - CKAN__PREVIEW__LOADABLE=html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json
       - CKAN__RESOURCE_PROXY__MAX_FILE_SIZE=50000000
-      # SAML2 Authentication with Keycloak
+
+      # ✅ SAML2 settings remain unchanged
       - CKANEXT__SAML2AUTH__IDP_METADATA__LOCATION=remote
       - CKANEXT__SAML2AUTH__IDP_METADATA__REMOTE_URL=https://auth.idtcities.com/realms/IdtCities/protocol/saml/descriptor
       - CKANEXT__SAML2AUTH__USER_FIRSTNAME=urn:oid:2.5.4.42
@@ -60,17 +43,16 @@ services:
       - CKANEXT__SAML2AUTH__WANT_ASSERTIONS_SIGNED=false
       - CKANEXT__SAML2AUTH__ASSERTION_CONSUMER_SERVICE_BINDING=urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
       - CKANEXT__SAML2AUTH__SP__NAME_ID_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+
     depends_on:
-      db:
-        condition: service_healthy
       solr:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+
     volumes:
       - ckan_storage:/var/lib/ckan
       - pip_cache:/root/.cache/pip
       - site_packages:/usr/lib/python3.10/site-packages
+
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000/api/action/status_show"]
@@ -79,11 +61,10 @@ services:
       retries: 3
 
   datapusher:
-    networks:
-      - ckannet
-      - dbnet
     build:
       context: datapusher/
+    networks:
+      - s4idtcities
     environment:
       - DATAPUSHER_SSL_VERIFY=0
       - DATAPUSHER_REWRITE_URL=True
@@ -95,50 +76,16 @@ services:
       timeout: 10s
       retries: 3
 
-  db:
-    build:
-      context: postgresql/
-    networks:
-      - dbnet
-    environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - CKAN_DB_USER
-      - CKAN_DB_PASSWORD
-      - CKAN_DB
-      - DATASTORE_READONLY_USER
-      - DATASTORE_READONLY_PASSWORD
-      - DATASTORE_DB
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
-     
   solr:
-    networks:
-      - solrnet
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
+    networks:
+      - s4idtcities
     volumes:
       - solr_data:/var/solr
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
 
-  redis:
-    image: redis:${REDIS_VERSION}
-    networks:
-      - redisnet
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "-e", "QUIT"]
-    
 networks:
-  ckannet:
-  solrnet:
-    internal: true
-  dbnet:
-    internal: true
-  redisnet:
-    internal: true
+  s4idtcities:
+    external: true    # ✅ this tells Docker not to create it, just use existing one

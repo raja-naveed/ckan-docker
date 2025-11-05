@@ -4,7 +4,7 @@ Complete step-by-step guide for setting up CKAN on Ubuntu Server with your exist
 
 ## 📋 Prerequisites
 
-### 1. Verify Docker Installation
+### Step 1.1: Verify Docker Installation
 
 ```bash
 # Check Docker version
@@ -22,51 +22,92 @@ docker-compose --version
 # newgrp docker
 ```
 
-### 2. Verify Existing Containers
+### Step 1.2: Verify Existing Containers
 
 ```bash
-# Check PostgreSQL container
+# Check PostgreSQL container is running
 docker ps | grep keycloak_postgres
 
-# Check Redis container
+# Check Redis container is running
 docker ps | grep redis
 
-# Check network
+# Check network exists
 docker network ls | grep s4idtcities
 
 # If network doesn't exist, create it:
 docker network create s4idtcities
 ```
 
-### 3. Navigate to CKAN Directory
+### Step 1.3: Navigate to CKAN Directory
 
 ```bash
 # Navigate to your CKAN project directory
-cd ~/ckan-docker
+cd ~/Snap4IdtCities/CKANDOCKER/ckan-docker
 # or wherever you uploaded/extracted the CKAN code
 
 # Verify you're in the right directory
 ls -la docker-compose.yml
+
+# List available setup scripts
+ls -la *.sh
 ```
 
 ---
 
-## 🗄️ Step 1: PostgreSQL Database Setup
+## 🗄️ Step 2: Detect PostgreSQL Superuser
 
-### Option A: Quick Automated Setup (Recommended)
+**IMPORTANT:** Before setting up databases, we need to detect the correct PostgreSQL superuser.
+
+### Step 2.1: Detect PostgreSQL User
 
 ```bash
-# Make script executable
-chmod +x quick_setup.sh
+# Make detection script executable
+chmod +x detect_postgres_user.sh
 
-# Run the setup script
-./quick_setup.sh
+# Run detection script
+./detect_postgres_user.sh
+```
+
+**OR manually test:**
+
+```bash
+# Try common usernames one by one
+docker exec -it keycloak_postgres psql -U keycloak -c "SELECT version();"
+docker exec -it keycloak_postgres psql -U postgres -c "SELECT version();"
+docker exec -it keycloak_postgres psql -c "SELECT version();"
+```
+
+**Note which username works!** (Usually it's `keycloak` for Keycloak PostgreSQL containers)
+
+### Step 2.2: List All PostgreSQL Users (Optional)
+
+```bash
+# Try to list users (use the username that worked above)
+docker exec -it keycloak_postgres psql -U keycloak -c "\du"
+# or
+docker exec -it keycloak_postgres psql -U postgres -c "\du"
+```
+
+---
+
+## 🗄️ Step 3: PostgreSQL Database Setup
+
+### Option A: Quick Automated Setup (Recommended) ⭐
+
+**This script auto-detects the PostgreSQL user!**
+
+```bash
+# Make fixed script executable
+chmod +x quick_setup_fixed.sh
+
+# Run the setup script (auto-detects PostgreSQL user)
+./quick_setup_fixed.sh
 ```
 
 **Expected Output:**
 ```
 🚀 Setting up PostgreSQL databases for CKAN...
-
+✅ Using PostgreSQL user: keycloak
 ✅ PostgreSQL setup complete!
 
 Databases created:
@@ -81,18 +122,21 @@ Users created:
 ### Option B: Detailed Setup Script
 
 ```bash
-# Make script executable
-chmod +x setup_postgresql.sh
+# Make fixed script executable
+chmod +x setup_postgresql_fixed.sh
 
-# Run detailed setup
-./setup_postgresql.sh
+# Run detailed setup (auto-detects PostgreSQL user)
+./setup_postgresql_fixed.sh
 ```
 
 ### Option C: Manual SQL Setup
 
+If scripts don't work, do it manually:
+
 ```bash
-# Connect to PostgreSQL container
-docker exec -it keycloak_postgres psql -U postgres
+# Connect to PostgreSQL container (use the username that worked in Step 2)
+docker exec -it keycloak_postgres psql -U keycloak
+# Replace 'keycloak' with the username you detected
 ```
 
 Then run these SQL commands:
@@ -132,14 +176,14 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO "readonly
 \q
 ```
 
-### Verify Database Setup
+### Step 3.1: Verify Database Setup
 
 ```bash
-# List databases
-docker exec -it keycloak_postgres psql -U postgres -c "\l" | grep -E "ckandb|datastore"
+# List databases (use detected username)
+docker exec -it keycloak_postgres psql -U keycloak -c "\l" | grep -E "ckandb|datastore"
 
 # List users
-docker exec -it keycloak_postgres psql -U postgres -c "\du" | grep -E "ckan-user|readonlyuser"
+docker exec -it keycloak_postgres psql -U keycloak -c "\du" | grep -E "ckan-user|readonlyuser"
 
 # Test CKAN database connection
 docker exec -it keycloak_postgres psql -U ckan-user -d ckandb -c "SELECT version();"
@@ -151,11 +195,24 @@ docker exec -it keycloak_postgres psql -U ckan-user -d datastore -c "SELECT vers
 docker exec -it keycloak_postgres psql -U readonlyuser -d datastore -c "SELECT version();"
 ```
 
+**Expected:** All commands should succeed without errors.
+
 ---
 
-## 🚀 Step 2: Start CKAN Containers
+## 🚀 Step 4: Start CKAN Containers
 
-### Start All Services
+### Step 4.1: Review Configuration
+
+```bash
+# Check docker-compose.yml exists
+cat docker-compose.yml | head -30
+
+# Verify database connection strings
+grep -A 2 "CKAN_SQLALCHEMY_URL" docker-compose.yml
+grep -A 2 "CKAN_REDIS_URL" docker-compose.yml
+```
+
+### Step 4.2: Start All Services
 
 ```bash
 # Start all CKAN services in detached mode
@@ -173,7 +230,7 @@ datapusher          ckan/ckan-datapusher      Up (healthy)
 solr                ckan/ckan-solr:2.11       Up (healthy)
 ```
 
-### Monitor Startup Logs
+### Step 4.3: Monitor Startup Logs
 
 ```bash
 # Watch CKAN logs (press Ctrl+C to exit)
@@ -186,13 +243,13 @@ docker-compose logs -f
 docker-compose logs -f solr
 ```
 
-**Wait for:** "Application startup complete" in CKAN logs
+**Wait for:** "Application startup complete" in CKAN logs (may take 1-2 minutes)
 
 ---
 
-## 🔧 Step 3: Initialize CKAN
+## 🔧 Step 5: Initialize CKAN
 
-### Get CKAN Container Name
+### Step 5.1: Get CKAN Container Name
 
 ```bash
 # Get CKAN container name/ID
@@ -203,7 +260,7 @@ echo $CKAN_CONTAINER
 docker ps | grep $CKAN_CONTAINER
 ```
 
-### Initialize CKAN Database Schema
+### Step 5.2: Initialize CKAN Database Schema
 
 ```bash
 # Initialize CKAN database
@@ -218,13 +275,23 @@ Initialising database: /srv/app/src/ckan/ckan/db/init_sysadmin.sql
 Successfully initialised database
 ```
 
-### Setup Datastore Permissions
+**If you see errors about connection, wait a bit and try again:**
+```bash
+# Wait 30 seconds for CKAN to fully start
+sleep 30
+docker exec -it $CKAN_CONTAINER ckan db init
+```
+
+### Step 5.3: Setup Datastore Permissions
 
 ```bash
 # Generate and apply datastore permissions
+# Use the PostgreSQL username you detected earlier (e.g., keycloak)
 docker exec -it $CKAN_CONTAINER ckan datastore set-permissions | \
-    docker exec -i keycloak_postgres psql -U postgres -d datastore
+    docker exec -i keycloak_postgres psql -U keycloak -d datastore
 ```
+
+**Replace `keycloak` with the username you detected in Step 2!**
 
 **Expected Output:**
 ```
@@ -234,7 +301,7 @@ GRANT USAGE ON SCHEMA public TO "readonlyuser";
 ...
 ```
 
-### Rebuild Search Index
+### Step 5.4: Rebuild Search Index
 
 ```bash
 # Rebuild Solr search index
@@ -245,9 +312,9 @@ docker exec -it $CKAN_CONTAINER ckan search-index rebuild
 
 ---
 
-## ✅ Step 4: Verification
+## ✅ Step 6: Verification
 
-### 1. Check Database Connection
+### Step 6.1: Check Database Connection
 
 ```bash
 # Test database connection
@@ -256,7 +323,7 @@ docker exec -it $CKAN_CONTAINER ckan db current
 # Should show database version and connection info
 ```
 
-### 2. Check API Status
+### Step 6.2: Check API Status
 
 ```bash
 # Test CKAN API
@@ -268,7 +335,7 @@ curl http://your-server-ip:5000/api/action/status_show
 
 **Expected Output:** JSON response with CKAN version info
 
-### 3. Check Web Interface
+### Step 6.3: Check Web Interface
 
 ```bash
 # Test web interface
@@ -277,7 +344,7 @@ curl -I http://localhost:5000/
 # Should return: HTTP/1.1 200 OK
 ```
 
-### 4. Check Container Health
+### Step 6.4: Check Container Health
 
 ```bash
 # Check all containers
@@ -287,7 +354,7 @@ docker-compose ps
 docker inspect $(docker-compose ps -q ckan) | grep -A 10 Health
 ```
 
-### 5. Check Logs for Errors
+### Step 6.5: Check Logs for Errors
 
 ```bash
 # View recent CKAN logs
@@ -301,7 +368,25 @@ docker-compose logs ckan | grep -i error
 
 ---
 
-## 🎯 Quick Reference Commands
+## 🎯 Complete Setup Checklist
+
+After completing all steps, verify:
+
+- [ ] PostgreSQL databases created (`ckandb`, `datastore`)
+- [ ] Database users created (`ckan-user`, `readonlyuser`)
+- [ ] Database permissions configured
+- [ ] CKAN containers running (`docker-compose ps`)
+- [ ] CKAN database initialized (`ckan db init` completed)
+- [ ] Datastore permissions set
+- [ ] Search index rebuilt
+- [ ] API responding (`curl http://localhost:5000/api/action/status_show`)
+- [ ] Web interface accessible
+- [ ] No errors in logs
+- [ ] SAML2 login working (can authenticate via Keycloak)
+
+---
+
+## 🔧 Quick Reference Commands
 
 ### Start/Stop Services
 
@@ -356,22 +441,39 @@ docker ps | grep ckan
 ### Database Operations
 
 ```bash
-# Connect to PostgreSQL
-docker exec -it keycloak_postgres psql -U postgres
+# Connect to PostgreSQL (use detected username, e.g., keycloak)
+docker exec -it keycloak_postgres psql -U keycloak
 
 # Connect as CKAN user
 docker exec -it keycloak_postgres psql -U ckan-user -d ckandb
 
 # List databases
-docker exec -it keycloak_postgres psql -U postgres -c "\l"
+docker exec -it keycloak_postgres psql -U keycloak -c "\l"
 
 # List users
-docker exec -it keycloak_postgres psql -U postgres -c "\du"
+docker exec -it keycloak_postgres psql -U keycloak -c "\du"
 ```
 
 ---
 
-## 🔍 Troubleshooting
+## 🐛 Troubleshooting
+
+### Issue: "role 'postgres' does not exist"
+
+**Solution:** Use the fixed scripts that auto-detect the user:
+
+```bash
+chmod +x quick_setup_fixed.sh
+./quick_setup_fixed.sh
+```
+
+Or manually detect and use the correct username:
+
+```bash
+# Detect username
+docker exec -it keycloak_postgres psql -U keycloak -c "SELECT version();"
+# If that works, use 'keycloak' instead of 'postgres'
+```
 
 ### Issue: Database Connection Failed
 
@@ -382,8 +484,8 @@ docker ps | grep keycloak_postgres
 # 2. Test network connectivity from CKAN container
 docker exec -it $(docker-compose ps -q ckan) ping -c 3 keycloak_postgres
 
-# 3. Verify database exists
-docker exec -it keycloak_postgres psql -U postgres -c "\l" | grep ckandb
+# 3. Verify database exists (use detected username)
+docker exec -it keycloak_postgres psql -U keycloak -c "\l" | grep ckandb
 
 # 4. Check connection string
 docker exec -it $(docker-compose ps -q ckan) env | grep CKAN_SQLALCHEMY_URL
@@ -422,11 +524,11 @@ curl http://localhost:8983/solr/
 ### Issue: Permission Denied
 
 ```bash
-# Re-run database setup
-./quick_setup.sh
+# Re-run database setup with fixed script
+./quick_setup_fixed.sh
 
-# Or manually fix permissions
-docker exec -i keycloak_postgres psql -U postgres -d datastore <<EOF
+# Or manually fix permissions (use detected username)
+docker exec -i keycloak_postgres psql -U keycloak -d datastore <<EOF
 GRANT USAGE ON SCHEMA public TO "readonlyuser";
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO "readonlyuser";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO "readonlyuser";
@@ -466,105 +568,52 @@ docker network inspect s4idtcities
 
 ---
 
-## 📊 Complete Setup Checklist
+## 🎉 All-in-One Setup Script
 
-After completing all steps, verify:
+If you want to automate everything, use the complete setup script:
 
-- [ ] PostgreSQL databases created (`ckandb`, `datastore`)
-- [ ] Database users created (`ckan-user`, `readonlyuser`)
-- [ ] Database permissions configured
-- [ ] CKAN containers running (`docker-compose ps`)
-- [ ] CKAN database initialized (`ckan db init` completed)
-- [ ] Datastore permissions set
-- [ ] Search index rebuilt
-- [ ] API responding (`curl http://localhost:5000/api/action/status_show`)
-- [ ] Web interface accessible
-- [ ] No errors in logs
-- [ ] SAML2 login working (can authenticate via Keycloak)
+```bash
+# Make script executable
+chmod +x setup_all.sh
+
+# Run complete setup
+./setup_all.sh
+```
+
+**Note:** Make sure to update `setup_all.sh` to use the detected PostgreSQL username if needed.
 
 ---
 
-## 🎉 All-in-One Setup Script
+## 📊 Summary
 
-Create `setup_all.sh`:
+### What Gets Created
 
-```bash
-#!/bin/bash
-# Complete CKAN setup script for Ubuntu Server
+**PostgreSQL Databases:**
+- `ckandb` — Main CKAN database
+- `datastore` — Data storage database
 
-set -e
+**PostgreSQL Users:**
+- `ckan-user` — Full access (password: `ckan-pass`)
+- `readonlyuser` — Read-only access (password: `readonlypass`)
 
-echo "=========================================="
-echo "CKAN Complete Setup Script"
-echo "=========================================="
-echo ""
+**Docker Containers:**
+- `ckan` — Main CKAN application
+- `datapusher` — Data processing service
+- `solr` — Search engine
 
-# Step 1: PostgreSQL Setup
-echo "🗄️  Step 1: Setting up PostgreSQL databases..."
-if [ -f "./quick_setup.sh" ]; then
-    chmod +x quick_setup.sh
-    ./quick_setup.sh
-else
-    echo "❌ quick_setup.sh not found!"
-    exit 1
-fi
+### Connection Strings Used
 
-# Step 2: Start Containers
-echo ""
-echo "🚀 Step 2: Starting CKAN containers..."
-docker-compose up -d
+Your `docker-compose.yml` uses these connection strings:
 
-# Step 3: Wait for services
-echo ""
-echo "⏳ Step 3: Waiting for services to be ready..."
-sleep 30
+```yaml
+# CKAN main database
+CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
 
-# Step 4: Initialize CKAN
-echo ""
-echo "🔧 Step 4: Initializing CKAN..."
-CKAN_CONTAINER=$(docker-compose ps -q ckan)
+# Datastore write access
+CKAN_DATASTORE_WRITE_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/datastore
 
-if [ -z "$CKAN_CONTAINER" ]; then
-    echo "❌ CKAN container not found!"
-    exit 1
-fi
-
-echo "Initializing database schema..."
-docker exec -it $CKAN_CONTAINER ckan db init
-
-echo "Setting up datastore permissions..."
-docker exec -it $CKAN_CONTAINER ckan datastore set-permissions | \
-    docker exec -i keycloak_postgres psql -U postgres -d datastore
-
-echo "Rebuilding search index..."
-docker exec -it $CKAN_CONTAINER ckan search-index rebuild
-
-# Step 5: Verification
-echo ""
-echo "✅ Step 5: Verifying installation..."
-echo "Testing API..."
-curl -s http://localhost:5000/api/action/status_show | head -5
-
-echo ""
-echo "=========================================="
-echo "✅ Setup Complete!"
-echo "=========================================="
-echo ""
-echo "CKAN is now running at: http://localhost:5000"
-echo "API available at: http://localhost:5000/api"
-echo ""
-echo "Next steps:"
-echo "  1. Access CKAN web interface"
-echo "  2. Login via SAML2 (click Login button)"
-echo "  3. Create your first dataset"
-echo ""
-```
-
-Make it executable and run:
-
-```bash
-chmod +x setup_all.sh
-./setup_all.sh
+# Datastore read-only access
+CKAN_DATASTORE_READ_URL=postgresql://readonlyuser:readonlypass@keycloak_postgres:5432/datastore
 ```
 
 ---
@@ -588,7 +637,16 @@ chmod +x setup_all.sh
 
 ---
 
-**Your CKAN instance is now ready on Ubuntu Server!** 🚀
+## 🚀 Next Steps After Setup
+
+1. **Access CKAN**: `http://your-server-ip:5000` (or your configured domain)
+2. **Login via SAML2**: Click "Login" button, authenticate with Keycloak
+3. **Create First Dataset**: Test the full workflow
+4. **Configure Nginx**: Set up reverse proxy if needed
+5. **Monitor Logs**: `docker-compose logs -f`
+
+---
+
+**Your CKAN instance is now ready on Ubuntu Server!** 🎊
 
 For support, check logs: `docker-compose logs -f`
-

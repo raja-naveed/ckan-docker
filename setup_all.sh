@@ -84,9 +84,35 @@ echo "🗄️  Step 2: Setting up PostgreSQL databases..."
 echo "=========================================="
 echo ""
 
+# Detect PostgreSQL superuser
+echo "Detecting PostgreSQL superuser..."
+POSTGRES_USER=""
+for USER in "postgres" "keycloak" "admin"; do
+    if docker exec $POSTGRES_CONTAINER psql -U $USER -c "SELECT 1;" > /dev/null 2>&1; then
+        POSTGRES_USER=$USER
+        print_status "Found PostgreSQL superuser: $POSTGRES_USER"
+        break
+    fi
+done
+
+# If not found, try default
+if [ -z "$POSTGRES_USER" ]; then
+    if docker exec $POSTGRES_CONTAINER psql -c "SELECT 1;" > /dev/null 2>&1; then
+        POSTGRES_USER=""  # Use default
+        print_status "Using default PostgreSQL user"
+        PSQL_CMD="docker exec -i $POSTGRES_CONTAINER psql"
+    else
+        print_error "Could not connect to PostgreSQL!"
+        print_warning "Please check: docker exec -it keycloak_postgres psql -U <username>"
+        exit 1
+    fi
+else
+    PSQL_CMD="docker exec -i $POSTGRES_CONTAINER psql -U $POSTGRES_USER"
+fi
+
 # Create databases and users
 echo "Creating CKAN database and user..."
-docker exec -i $POSTGRES_CONTAINER psql -U postgres <<EOF
+$PSQL_CMD <<EOF
 -- Create CKAN user
 DO \$\$ BEGIN
     IF NOT EXISTS (SELECT FROM pg_user WHERE usename = '$CKAN_DB_USER') THEN
@@ -125,20 +151,34 @@ print_status "Databases and users created"
 
 # Setup datastore permissions
 echo "Setting up datastore permissions..."
-docker exec -i $POSTGRES_CONTAINER psql -U postgres -d $DATASTORE_DB <<EOF
+if [ -z "$POSTGRES_USER" ]; then
+    docker exec -i $POSTGRES_CONTAINER psql -d $DATASTORE_DB <<EOF
 GRANT USAGE ON SCHEMA public TO "$DATASTORE_READONLY_USER";
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO "$DATASTORE_READONLY_USER";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO "$DATASTORE_READONLY_USER";
 GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO "$DATASTORE_READONLY_USER";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO "$DATASTORE_READONLY_USER";
 EOF
+else
+    docker exec -i $POSTGRES_CONTAINER psql -U $POSTGRES_USER -d $DATASTORE_DB <<EOF
+GRANT USAGE ON SCHEMA public TO "$DATASTORE_READONLY_USER";
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO "$DATASTORE_READONLY_USER";
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO "$DATASTORE_READONLY_USER";
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO "$DATASTORE_READONLY_USER";
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON SEQUENCES TO "$DATASTORE_READONLY_USER";
+EOF
+fi
 
 print_status "Datastore permissions configured"
 
 # Verify databases
 echo ""
 echo "Verifying database setup..."
-DB_COUNT=$(docker exec -i $POSTGRES_CONTAINER psql -U postgres -t -c "SELECT COUNT(*) FROM pg_database WHERE datname IN ('$CKAN_DB', '$DATASTORE_DB');" | tr -d ' ')
+if [ -z "$POSTGRES_USER" ]; then
+    DB_COUNT=$(docker exec -i $POSTGRES_CONTAINER psql -t -c "SELECT COUNT(*) FROM pg_database WHERE datname IN ('$CKAN_DB', '$DATASTORE_DB');" | tr -d ' ')
+else
+    DB_COUNT=$(docker exec -i $POSTGRES_CONTAINER psql -U $POSTGRES_USER -t -c "SELECT COUNT(*) FROM pg_database WHERE datname IN ('$CKAN_DB', '$DATASTORE_DB');" | tr -d ' ')
+fi
 if [ "$DB_COUNT" = "2" ]; then
     print_status "Both databases verified"
 else
@@ -202,8 +242,13 @@ fi
 
 # Setup datastore
 echo "Setting up datastore permissions..."
-docker exec -it $CKAN_CONTAINER ckan datastore set-permissions 2>&1 | \
-    docker exec -i $POSTGRES_CONTAINER psql -U postgres -d $DATASTORE_DB > /dev/null 2>&1
+if [ -z "$POSTGRES_USER" ]; then
+    docker exec -it $CKAN_CONTAINER ckan datastore set-permissions 2>&1 | \
+        docker exec -i $POSTGRES_CONTAINER psql -d $DATASTORE_DB > /dev/null 2>&1
+else
+    docker exec -it $CKAN_CONTAINER ckan datastore set-permissions 2>&1 | \
+        docker exec -i $POSTGRES_CONTAINER psql -U $POSTGRES_USER -d $DATASTORE_DB > /dev/null 2>&1
+fi
 print_status "Datastore permissions configured"
 
 # Rebuild search index

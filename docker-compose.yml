@@ -30,14 +30,22 @@ services:
       - CKAN__VIEWS__DEFAULT_VIEWS=image_view text_view datatables_view pdf_view geo_view geojson_view
       - CKAN__RESOURCE_PROXY__MAX_FILE_SIZE=50000000
 
-      # ✅ SAML2 settings remain unchanged
+      # ✅ CKAN Site Configuration
+      - CKAN__SITE__URL=https://datagate.idtcities.com
+      - CKAN__SITE__ID=default
+      
+      # ✅ File Upload Configuration
+      - CKAN__UPLOADS__ENABLED=true
+      - CKAN__STORAGE__PATH=/var/lib/ckan/default
+      
+      # ✅ SAML2 settings with correct domain
       - CKANEXT__SAML2AUTH__IDP_METADATA__LOCATION=remote
       - CKANEXT__SAML2AUTH__IDP_METADATA__REMOTE_URL=https://auth.idtcities.com/realms/IdtCities/protocol/saml/descriptor
       - CKANEXT__SAML2AUTH__USER_FIRSTNAME=urn:oid:2.5.4.42
       - CKANEXT__SAML2AUTH__USER_LASTNAME=urn:oid:2.5.4.4
       - CKANEXT__SAML2AUTH__USER_FULLNAME=name
       - CKANEXT__SAML2AUTH__USER_EMAIL=urn:oid:1.2.840.113549.1.9.1
-      - CKANEXT__SAML2AUTH__ENTITY_ID=https://localhost:8443/saml2/metadata
+      - CKANEXT__SAML2AUTH__ENTITY_ID=https://datagate.idtcities.com/saml2/metadata
       - CKANEXT__SAML2AUTH__ACS_ENDPOINT=/saml2/acs
       - CKANEXT__SAML2AUTH__ENABLE_CKAN_INTERNAL_LOGIN=false
       - CKANEXT__SAML2AUTH__WANT_RESPONSE_SIGNED=false

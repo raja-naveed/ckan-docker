@@ -1,7 +1,7 @@
 #!/bin/bash
-# Detect PostgreSQL superuser in keycloak_postgres container
+# Detect PostgreSQL superuser in postgres container
 
-POSTGRES_CONTAINER="keycloak_postgres"
+POSTGRES_CONTAINER="postgres"
 
 echo "Detecting PostgreSQL superuser..."
 echo ""

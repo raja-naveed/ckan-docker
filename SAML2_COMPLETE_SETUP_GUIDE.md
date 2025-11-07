@@ -78,7 +78,7 @@ services:
       - s4idtcities
     environment:
       # Database connections
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@postgres:5432/ckandb
       - CKAN_REDIS_URL=redis://redis:6379/0
       
       # Plugins (saml2auth is critical)

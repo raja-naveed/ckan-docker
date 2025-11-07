@@ -2,7 +2,7 @@
 # Quick PostgreSQL Setup for CKAN (Fixed Version)
 # Auto-detects PostgreSQL superuser
 
-POSTGRES_CONTAINER="keycloak_postgres"
+POSTGRES_CONTAINER="postgres"
 
 echo "🚀 Setting up PostgreSQL databases for CKAN..."
 echo ""
@@ -24,7 +24,7 @@ if [ -z "$POSTGRES_USER" ]; then
         PSQL_CMD="docker exec -i $POSTGRES_CONTAINER psql"
     else
         echo "❌ Could not connect to PostgreSQL!"
-        echo "Please check: docker exec -it keycloak_postgres psql -U <username>"
+        echo "Please check: docker exec -it postgres psql -U <username>"
         exit 1
     fi
 else

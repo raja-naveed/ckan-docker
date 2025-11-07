@@ -1,8 +1,8 @@
-# ✅ Domain Migration Complete: localhost:8443 → datagate.idtcities.com
+# ✅ Domain Migration Complete: localhost:8443 → datagate.snap4idtcity.com
 
 ## 🎯 Summary
 
-All configurations have been updated to use `https://datagate.idtcities.com` instead of `https://localhost:8443`.
+All configurations have been updated to use `https://datagate.snap4idtcity.com` instead of `https://localhost:8443`.
 
 ---
 
@@ -10,28 +10,28 @@ All configurations have been updated to use `https://datagate.idtcities.com` ins
 
 ### 1. **CKAN Configuration** ✅
 - **File:** `/srv/app/ckan.ini` (inside container)
-- **Changed:** `ckan.site_url = https://datagate.idtcities.com`
-- **Changed:** `ckanext.saml2auth.entity_id = https://datagate.idtcities.com/saml2/metadata`
+- **Changed:** `ckan.site_url = https://datagate.snap4idtcity.com`
+- **Changed:** `ckanext.saml2auth.entity_id = https://datagate.snap4idtcity.com/saml2/metadata`
 
 ### 2. **Environment Variables** ✅
 - **File:** `docker-compose.yml`
-- **Changed:** `CKAN__SITE__URL=https://datagate.idtcities.com`
-- **Changed:** `CKANEXT__SAML2AUTH__ENTITY_ID=https://datagate.idtcities.com/saml2/metadata`
+- **Changed:** `CKAN__SITE__URL=https://datagate.snap4idtcity.com`
+- **Changed:** `CKANEXT__SAML2AUTH__ENTITY_ID=https://datagate.snap4idtcity.com/saml2/metadata`
 
 ### 3. **.env File** ✅
 - **File:** `.env`
-- **Changed:** `CKAN_SITE_URL=https://datagate.idtcities.com`
+- **Changed:** `CKAN_SITE_URL=https://datagate.snap4idtcity.com`
 
 ### 4. **Nginx Configuration** ✅
 - **File:** `nginx/setup/default.conf`
-- **Changed:** `server_name datagate.idtcities.com;`
+- **Changed:** `server_name datagate.snap4idtcity.com;`
 - **Added:** Proper proxy headers for domain forwarding
 
 ### 5. **Keycloak SAML2 Client** ✅ (You updated this)
-- **Client ID:** `https://datagate.idtcities.com/saml2/metadata`
-- **Valid Redirect URIs:** `https://datagate.idtcities.com/saml2/acs`
-- **Valid Post Logout Redirect URIs:** `https://datagate.idtcities.com/*`
-- **Web Origins:** `https://datagate.idtcities.com`
+- **Client ID:** `https://datagate.snap4idtcity.com/saml2/metadata`
+- **Valid Redirect URIs:** `https://datagate.snap4idtcity.com/saml2/acs`
+- **Valid Post Logout Redirect URIs:** `https://datagate.snap4idtcity.com/*`
+- **Web Origins:** `https://datagate.snap4idtcity.com`
 
 ---
 
@@ -40,14 +40,14 @@ All configurations have been updated to use `https://datagate.idtcities.com` ins
 Please test these to verify everything works:
 
 ### ✅ Test 1: Access CKAN Homepage
-- [ ] Open: `https://datagate.idtcities.com`
+- [ ] Open: `https://datagate.snap4idtcity.com`
 - [ ] Should load without redirecting to localhost:8443
 - [ ] Logo and homepage should display correctly
 
 ### ✅ Test 2: SAML2 Login Flow
 - [ ] Click "Login" button
 - [ ] Should redirect to Keycloak: `https://auth.idtcities.com`
-- [ ] After login, should redirect back to: `https://datagate.idtcities.com`
+- [ ] After login, should redirect back to: `https://datagate.snap4idtcity.com`
 - [ ] Should NOT redirect to `localhost:8443`
 - [ ] User should be logged in and see their username
 
@@ -55,18 +55,18 @@ Please test these to verify everything works:
 - [ ] Go to any dataset → "Add Resource"
 - [ ] Check "Upload" button - should show correct domain
 - [ ] Upload a file
-- [ ] File URL should be: `https://datagate.idtcities.com/storage/...`
+- [ ] File URL should be: `https://datagate.snap4idtcity.com/storage/...`
 - [ ] Should NOT contain `localhost:8443`
 
 ### ✅ Test 4: Resource URLs
 - [ ] View any resource/download file
-- [ ] URLs should use: `https://datagate.idtcities.com/...`
+- [ ] URLs should use: `https://datagate.snap4idtcity.com/...`
 - [ ] Should NOT contain `localhost:8443`
 
 ### ✅ Test 5: SAML2 Metadata
-- [ ] Open: `https://datagate.idtcities.com/saml2/metadata`
-- [ ] Should show XML with `entityID="https://datagate.idtcities.com/saml2/metadata"`
-- [ ] Should show ACS URL: `https://datagate.idtcities.com/saml2/acs`
+- [ ] Open: `https://datagate.snap4idtcity.com/saml2/metadata`
+- [ ] Should show XML with `entityID="https://datagate.snap4idtcity.com/saml2/metadata"`
+- [ ] Should show ACS URL: `https://datagate.snap4idtcity.com/saml2/acs`
 
 ---
 
@@ -103,8 +103,8 @@ docker compose ps
 
 **Solution:**
 1. Double-check Keycloak client settings:
-   - Valid Redirect URIs must include: `https://datagate.idtcities.com/saml2/acs`
-   - Web Origins must include: `https://datagate.idtcities.com`
+   - Valid Redirect URIs must include: `https://datagate.snap4idtcity.com/saml2/acs`
+   - Web Origins must include: `https://datagate.snap4idtcity.com`
 2. Verify no typos in URLs
 
 ### Issue: File upload URLs still show localhost
@@ -130,9 +130,9 @@ docker compose ps
 
 **All domain configurations have been updated!**
 
-- ✅ CKAN site URL: `https://datagate.idtcities.com`
-- ✅ SAML2 Entity ID: `https://datagate.idtcities.com/saml2/metadata`
-- ✅ Nginx server name: `datagate.idtcities.com`
+- ✅ CKAN site URL: `https://datagate.snap4idtcity.com`
+- ✅ SAML2 Entity ID: `https://datagate.snap4idtcity.com/saml2/metadata`
+- ✅ Nginx server name: `datagate.snap4idtcity.com`
 - ✅ Keycloak client: Updated with new domain
 
 **Next Steps:**

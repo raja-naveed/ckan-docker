@@ -1,6 +1,6 @@
 #!/bin/bash
 # CKAN PostgreSQL Database Setup Script
-# This script sets up databases and users for CKAN in the existing keycloak_postgres container
+# This script sets up databases and users for CKAN in the existing postgres container
 
 set -e
 
@@ -18,7 +18,7 @@ DATASTORE_DB="datastore"
 DATASTORE_READONLY_USER="readonlyuser"
 DATASTORE_READONLY_PASSWORD="readonlypass"
 
-POSTGRES_CONTAINER="keycloak_postgres"
+POSTGRES_CONTAINER="postgres"
 POSTGRES_USER="postgres"  # Default postgres superuser
 
 echo "Step 1: Creating CKAN main database and user..."

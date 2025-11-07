@@ -1,6 +1,6 @@
 -- CKAN PostgreSQL Database Setup SQL Script
--- Run this script inside the keycloak_postgres container
--- Usage: docker exec -i keycloak_postgres psql -U postgres < setup_postgresql.sql
+-- Run this script inside the postgres container
+-- Usage: docker exec -i postgres psql -U postgres < setup_postgresql.sql
 
 -- ==========================================
 -- Step 1: Create CKAN Database and User

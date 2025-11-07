@@ -10,7 +10,7 @@ echo "=========================================="
 echo ""
 
 # Configuration
-POSTGRES_CONTAINER="keycloak_postgres"
+POSTGRES_CONTAINER="postgres"
 CKAN_DB="ckandb"
 CKAN_DB_USER="ckan-user"
 CKAN_DB_PASSWORD="ckan-pass"
@@ -40,9 +40,9 @@ if [ -z "$POSTGRES_USER" ]; then
         echo "❌ Could not connect to PostgreSQL!"
         echo ""
         echo "Please check:"
-        echo "  1. Container is running: docker ps | grep keycloak_postgres"
-        echo "  2. Try manual connection: docker exec -it keycloak_postgres psql -U <username>"
-        echo "  3. List users: docker exec -it keycloak_postgres psql -U <username> -c '\du'"
+        echo "  1. Container is running: docker ps | grep postgres"
+        echo "  2. Try manual connection: docker exec -it postgres psql -U <username>"
+        echo "  3. List users: docker exec -it postgres psql -U <username> -c '\du'"
         exit 1
     fi
 fi

@@ -16,7 +16,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-POSTGRES_CONTAINER="keycloak_postgres"
+POSTGRES_CONTAINER="postgres"
 CKAN_DB="ckandb"
 CKAN_DB_USER="ckan-user"
 CKAN_DB_PASSWORD="ckan-pass"
@@ -103,7 +103,7 @@ if [ -z "$POSTGRES_USER" ]; then
         PSQL_CMD="docker exec -i $POSTGRES_CONTAINER psql"
     else
         print_error "Could not connect to PostgreSQL!"
-        print_warning "Please check: docker exec -it keycloak_postgres psql -U <username>"
+        print_warning "Please check: docker exec -it postgres psql -U <username>"
         exit 1
     fi
 else

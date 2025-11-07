@@ -61,7 +61,7 @@ docker --version
 docker compose version
 
 # Check network connectivity
-ping -c 3 keycloak_postgres
+ping -c 3 postgres
 ping -c 3 redis
 curl -k https://auth.idtcities.com
 ```
@@ -120,9 +120,9 @@ services:
       - .env
     environment:
       # Database connections
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
-      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://readonlyuser:readonlypass@keycloak_postgres:5432/datastore
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@postgres:5432/ckandb
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan-user:ckan-pass@postgres:5432/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://readonlyuser:readonlypass@postgres:5432/datastore
       - CKAN_REDIS_URL=redis://redis:6379/0
 
       # Plugins (saml2auth is critical)
@@ -1094,7 +1094,7 @@ docker compose logs ckan | tail -50
 docker exec ckan-docker-ckan-1 python3 -m py_compile /srv/app/src/ckanext-custom-theme/ckanext/custom_theme/plugin.py
 
 # Check database connection
-docker exec ckan-docker-ckan-1 ping -c 3 keycloak_postgres
+docker exec ckan-docker-ckan-1 ping -c 3 postgres
 ```
 
 ### Issue: 405 Method Not Allowed on ACS

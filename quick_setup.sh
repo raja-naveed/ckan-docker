@@ -1,8 +1,8 @@
 #!/bin/bash
 # Quick PostgreSQL Setup for CKAN
-# Run this on your server where keycloak_postgres container is running
+# Run this on your server where postgres container is running
 
-POSTGRES_CONTAINER="keycloak_postgres"
+POSTGRES_CONTAINER="postgres"
 
 echo "🚀 Setting up PostgreSQL databases for CKAN..."
 echo ""

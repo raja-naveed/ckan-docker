@@ -19,19 +19,19 @@ services:
       - .env
     environment:
       # ✅ Point CKAN to existing Postgres and Redis within s4idtcities network
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
-      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://readonlyuser:readonlypass@keycloak_postgres:5432/datastore
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan-user:ckan-pass@postgres:5432/ckandb
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan-user:ckan-pass@postgres:5432/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://readonlyuser:readonlypass@postgres:5432/datastore
       - CKAN_REDIS_URL=redis://redis:6379/0
 
       # ✅ Plugins and configuration
       - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme saml2auth
-      - CKANEXT__XLOADER__JOBS__DB_URI=postgresql://ckan-user:ckan-pass@keycloak_postgres:5432/ckandb
+      - CKANEXT__XLOADER__JOBS__DB_URI=postgresql://ckan-user:ckan-pass@postgres:5432/ckandb
       - CKAN__VIEWS__DEFAULT_VIEWS=image_view text_view datatables_view pdf_view geo_view geojson_view
       - CKAN__RESOURCE_PROXY__MAX_FILE_SIZE=50000000
 
       # ✅ CKAN Site Configuration
-      - CKAN__SITE__URL=https://datagate.idtcities.com
+      - CKAN__SITE__URL=https://datagate.snap4idtcity.com
       - CKAN__SITE__ID=default
       
       # ✅ File Upload Configuration
@@ -45,7 +45,7 @@ services:
       - CKANEXT__SAML2AUTH__USER_LASTNAME=urn:oid:2.5.4.4
       - CKANEXT__SAML2AUTH__USER_FULLNAME=name
       - CKANEXT__SAML2AUTH__USER_EMAIL=urn:oid:1.2.840.113549.1.9.1
-      - CKANEXT__SAML2AUTH__ENTITY_ID=https://datagate.idtcities.com/saml2/metadata
+      - CKANEXT__SAML2AUTH__ENTITY_ID=https://datagate.snap4idtcity.com/saml2/metadata
       - CKANEXT__SAML2AUTH__ACS_ENDPOINT=/saml2/acs
       - CKANEXT__SAML2AUTH__ENABLE_CKAN_INTERNAL_LOGIN=false
       - CKANEXT__SAML2AUTH__WANT_RESPONSE_SIGNED=false

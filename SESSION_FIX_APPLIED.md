@@ -56,7 +56,7 @@ set_subject_id(session, session_info['name_id'])
 After applying the fix:
 
 1. **Login Test:**
-   - Go to: `https://datagate.idtcities.com`
+   - Go to: `https://datagate.snap4idtcity.com`
    - Click "Login"
    - Login through Keycloak
    - Should redirect to homepage (NOT `/saml2/acs` with 500 error)

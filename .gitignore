@@ -8,3 +8,7 @@ _solr/schema.xml
 _src/*
 local/*
 .env
+
+# Ignore Markdown files except README.md (keep README visible on GitHub)
+*.md
+!README.md

@@ -1,0 +1,58 @@
+================================================================================
+  CKAN SAML2 DEPLOYMENT - NEW SERVER SETUP SUMMARY
+  Domain: datagate.snap4idtcity.com
+  Database: postgres (s4idtcities network)
+================================================================================
+
+✅ CONFIGURATION STATUS:
+   - Domain: datagate.snap4idtcity.com (ALREADY CONFIGURED)
+   - Database: postgres (ALREADY CONFIGURED)
+   - Entity ID: https://datagate.snap4idtcity.com/saml2/metadata (ALREADY CONFIGURED)
+   - All SAML2 fixes included
+
+📋 WHAT YOU NEED TO DO:
+
+1. Copy files to new server:
+   scp -r ckan-docker/ user@new-server:/home/user/
+
+2. SSH to server:
+   ssh user@new-server
+   cd /home/user/ckan-docker
+
+3. Create .env file:
+   cp .env.example .env
+   nano .env
+   (Update passwords: POSTGRES_PASSWORD, CKAN_SYSADMIN_PASSWORD)
+
+4. Verify setup:
+   chmod +x verify_setup.sh deploy.sh
+   ./verify_setup.sh
+
+5. Deploy:
+   ./deploy.sh
+
+6. Update Keycloak:
+   - Go to: https://auth.idtcities.com/admin
+   - Realm: IdtCities
+   - Clients: Update CKAN client
+   - Client ID: https://datagate.snap4idtcity.com/saml2/metadata
+   - Valid Redirect URIs: https://datagate.snap4idtcity.com/saml2/acs
+   - Web Origins: https://datagate.snap4idtcity.com
+
+✅ VERIFICATION:
+   docker compose ps
+   curl -k https://datagate.snap4idtcity.com
+   curl -k https://datagate.snap4idtcity.com/saml2/metadata
+
+📚 DOCUMENTATION:
+   - QUICK_START.md - Quick deployment guide
+   - DEPLOYMENT_GUIDE.md - Complete deployment guide
+   - NEW_SERVER_SETUP.md - This setup summary
+   - KEYCLOAK_UPDATE_GUIDE.md - Keycloak configuration
+
+🚀 READY TO DEPLOY!
+   All configurations are correct. Just set passwords and run ./deploy.sh
+
+================================================================================
+
+

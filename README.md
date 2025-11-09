@@ -87,7 +87,7 @@ CKAN_SITE_TITLE="Your Data Portal"
 CKAN_SITE_DESCRIPTION="Open data portal"
 
 # SAML2 Configuration
-SAML2_IDP_URL=https://auth.idtcities.com/realms/IdtCities/protocol/saml/descriptor
+SAML2_IDP_URL=https://auth.snap4idtcity.com/realms/IdtCities/protocol/saml/descriptor
 SAML2_ENTITY_ID=https://your-domain.com/saml2/metadata
 ```
 
@@ -141,7 +141,7 @@ docker exec ckan-docker-ckan-1 grep -c "session_info_copy" /usr/local/lib/python
 ### Keycloak Setup
 
 1. **Access Keycloak Admin Console:**
-   - URL: `https://auth.idtcities.com/admin/`
+   - URL: `https://auth.snap4idtcity.com/admin/`
    - Realm: `IdtCities`
 
 2. **Create/Update SAML Client:**

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# Complete CKAN SAML2 Deployment Script
+# Complete CKAN Deployment Script
 # Domain: datagate.snap4idtcity.com
 # Database: postgres (in s4idtcities network)
 ###############################################################################
@@ -18,10 +18,9 @@ NC='\033[0m' # No Color
 # Configuration
 CKAN_CONTAINER="ckan-docker-ckan-1"
 DOMAIN="datagate.snap4idtcity.com"
-ENTITY_ID="https://${DOMAIN}/saml2/metadata"
 
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}  CKAN SAML2 Deployment Script${NC}"
+echo -e "${BLUE}  CKAN Deployment Script${NC}"
 echo -e "${BLUE}  Domain: ${DOMAIN}${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
@@ -94,110 +93,55 @@ for i in {1..60}; do
 done
 echo ""
 
-# Step 5: Apply session persistence fix
-echo -e "${YELLOW}[5/10] Applying session persistence fix...${NC}"
-if [ -f "fix_session.py" ]; then
-    docker cp fix_session.py ${CKAN_CONTAINER}:/tmp/ 2>/dev/null || {
-        echo -e "${YELLOW}Container name might be different, trying to find it...${NC}"
-        CKAN_CONTAINER=$(docker compose ps -q ckan)
-        if [ -z "$CKAN_CONTAINER" ]; then
-            echo -e "${RED}ERROR: Could not find CKAN container${NC}"
-            exit 1
-        fi
-        docker cp fix_session.py ${CKAN_CONTAINER}:/tmp/
-    }
-    
-    docker exec -u root ${CKAN_CONTAINER} python3 /tmp/fix_session.py || {
-        echo -e "${RED}ERROR: Failed to apply session fix${NC}"
-        exit 1
-    }
-    echo -e "${GREEN}✓ Session fix applied${NC}"
-else
-    echo -e "${RED}ERROR: fix_session.py not found${NC}"
-    exit 1
-fi
-echo ""
+# Step 5: Apply CKAN configuration
+echo -e "${YELLOW}[5/7] Applying CKAN configuration...${NC}"
+docker exec ${CKAN_CONTAINER} ckan -c /srv/app/ckan.ini config-tool /srv/app/ckan.ini \
+  "ckan.uploads_enabled = true" \
+  "ckan.storage_path = /var/lib/ckan/default" \
+  "ckan.site_url = https://${DOMAIN}" \
+  "ckan.auth.login_view = user.login" \
+  "ckan.plugins = image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme"
 
-# Step 6: Apply ACS endpoint fix
-echo -e "${YELLOW}[6/10] Applying ACS endpoint fix...${NC}"
-if [ -f "fix_acs_endpoint.py" ]; then
-    docker cp fix_acs_endpoint.py ${CKAN_CONTAINER}:/tmp/ 2>/dev/null || {
-        docker cp fix_acs_endpoint.py ${CKAN_CONTAINER}:/tmp/
-    }
-    
-    docker exec -u root ${CKAN_CONTAINER} python3 /tmp/fix_acs_endpoint.py || {
-        echo -e "${RED}ERROR: Failed to apply ACS endpoint fix${NC}"
-        exit 1
-    }
-    echo -e "${GREEN}✓ ACS endpoint fix applied${NC}"
-else
-    echo -e "${YELLOW}WARNING: fix_acs_endpoint.py not found (may not be needed)${NC}"
-fi
-echo ""
+# Remove any legacy SAML configuration that might remain
+docker exec ${CKAN_CONTAINER} ckan -c /srv/app/ckan.ini config-tool /srv/app/ckan.ini \
+  "ckanext.saml2auth.idp_metadata.location =" \
+  "ckanext.saml2auth.idp_metadata.remote_url =" \
+  "ckanext.saml2auth.entity_id =" \
+  "ckanext.saml2auth.acs_endpoint =" \
+  "ckanext.saml2auth.user_email =" \
+  "ckanext.saml2auth.user_firstname =" \
+  "ckanext.saml2auth.user_lastname =" \
+  "ckanext.saml2auth.user_fullname =" \
+  "ckanext.saml2auth.enable_ckan_internal_login =" \
+  "ckanext.saml2auth.want_response_signed =" \
+  "ckanext.saml2auth.want_assertions_signed =" \
+  "ckanext.saml2auth.assertion_consumer_service_binding =" \
+  "ckanext.saml2auth.sp.name_id_format ="
 
-# Step 7: Enable file uploads
-echo -e "${YELLOW}[7/10] Configuring file uploads...${NC}"
-docker exec ${CKAN_CONTAINER} ckan -c /srv/app/ckan.ini config-tool /srv/app/ckan.ini "ckan.uploads_enabled = true" || true
-docker exec ${CKAN_CONTAINER} ckan -c /srv/app/ckan.ini config-tool /srv/app/ckan.ini "ckan.storage_path = /var/lib/ckan/default" || true
 docker exec -u root ${CKAN_CONTAINER} mkdir -p /var/lib/ckan/default/storage/uploads || true
 docker exec -u root ${CKAN_CONTAINER} chown -R 503:502 /var/lib/ckan/default || true
-echo -e "${GREEN}✓ File uploads configured${NC}"
+echo -e "${GREEN}✓ CKAN configuration applied${NC}"
 echo ""
 
-# Step 8: Restart CKAN to apply all fixes
-echo -e "${YELLOW}[8/10] Restarting CKAN to apply fixes...${NC}"
+# Step 6: Restart CKAN to apply all changes
+echo -e "${YELLOW}[6/7] Restarting CKAN to apply changes...${NC}"
 docker compose restart ckan
 echo "Waiting for CKAN to restart..."
 sleep 20
 echo -e "${GREEN}✓ CKAN restarted${NC}"
 echo ""
 
-# Step 9: Verify installation
-echo -e "${YELLOW}[9/10] Verifying installation...${NC}"
-
-# Check if session fix is applied
-if docker exec ${CKAN_CONTAINER} grep -q "session_info_copy" /usr/local/lib/python3.10/site-packages/ckanext/saml2auth/cache.py 2>/dev/null; then
-    echo -e "${GREEN}✓ Session fix verified${NC}"
-else
-    echo -e "${RED}WARNING: Session fix verification failed${NC}"
-fi
-
-# Check if ACS endpoint is fixed
-if docker exec ${CKAN_CONTAINER} grep -q "acs_endpoint = '/saml2/acs'" /usr/local/lib/python3.10/site-packages/ckanext/saml2auth/views/saml2auth.py 2>/dev/null; then
-    echo -e "${GREEN}✓ ACS endpoint fix verified${NC}"
-else
-    echo -e "${YELLOW}WARNING: ACS endpoint fix verification failed (may not be needed)${NC}"
-fi
-
-# Check services status
-if docker compose ps | grep -q "Up"; then
-    echo -e "${GREEN}✓ All services are running${NC}"
-else
-    echo -e "${RED}WARNING: Some services may not be running${NC}"
-fi
-
-echo ""
-
-# Step 10: Final status
-echo -e "${YELLOW}[10/10] Deployment Summary${NC}"
+# Step 7: Final status
+echo -e "${YELLOW}[7/7] Deployment Summary${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo -e "Domain: ${GREEN}${DOMAIN}${NC}"
-echo -e "Entity ID: ${GREEN}${ENTITY_ID}${NC}"
 echo -e "Database: ${GREEN}postgres (s4idtcities network)${NC}"
 echo ""
 echo -e "${GREEN}✓ Deployment completed successfully!${NC}"
 echo ""
 echo -e "${YELLOW}Next Steps:${NC}"
-echo "1. Update Keycloak client configuration:"
-echo "   - Client ID: ${ENTITY_ID}"
-echo "   - Valid Redirect URIs: https://${DOMAIN}/saml2/acs"
-echo "   - Valid Post Logout Redirect URIs: https://${DOMAIN}/*"
-echo "   - Web Origins: https://${DOMAIN}"
-echo ""
-echo "2. Test the installation:"
-echo "   - Access: https://${DOMAIN}"
-echo "   - Test login: https://${DOMAIN}/user/saml2login"
-echo ""
+echo "1. Access CKAN: https://${DOMAIN}"
+echo "2. Log in using the built-in CKAN login page: https://${DOMAIN}/user/login"
 echo "3. Check logs if needed:"
 echo "   docker compose logs -f ckan"
 echo ""

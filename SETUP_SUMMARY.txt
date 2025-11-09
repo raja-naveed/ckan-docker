@@ -32,7 +32,7 @@
    ./deploy.sh
 
 6. Update Keycloak:
-   - Go to: https://auth.idtcities.com/admin
+   - Go to: https://auth.snap4idtcity.com/admin
    - Realm: IdtCities
    - Clients: Update CKAN client
    - Client ID: https://datagate.snap4idtcity.com/saml2/metadata

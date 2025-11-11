@@ -100,7 +100,8 @@ docker exec ${CKAN_CONTAINER} ckan -c /srv/app/ckan.ini config-tool /srv/app/cka
   "ckan.storage_path = /var/lib/ckan/default" \
   "ckan.site_url = https://${DOMAIN}" \
   "ckan.auth.login_view = user.login" \
-  "ckan.plugins = image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme"
+  "ckan.plugins = image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy recline_view datastore xloader envvars custom_theme" \
+  "ckan.views.default_views = recline_view datatables_view"
 
 # Remove any legacy SAML configuration that might remain
 docker exec ${CKAN_CONTAINER} ckan -c /srv/app/ckan.ini config-tool /srv/app/ckan.ini \

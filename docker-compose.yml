@@ -25,7 +25,7 @@ services:
       - CKAN_REDIS_URL=redis://redis:6379/0
 
       # ✅ Plugins and configuration
-      - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy datastore xloader envvars custom_theme
+      - CKAN__PLUGINS=image_view text_view datatables_view pdf_view geo_view geojson_view shp_view wmts_view video_view audio_view webpage_view resource_proxy recline_view datastore xloader envvars custom_theme
       - CKANEXT__XLOADER__JOBS__DB_URI=postgresql://ckan-user:ckan-pass@postgres:5432/ckandb
       - CKAN__VIEWS__DEFAULT_VIEWS=image_view text_view datatables_view pdf_view geo_view geojson_view
       - CKAN__RESOURCE_PROXY__MAX_FILE_SIZE=50000000

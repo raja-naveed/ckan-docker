@@ -314,6 +314,65 @@ sudo ufw deny 8800
 - **CSRF protection** enabled
 - **Secure headers** configured
 
+### Optional: Re-enable SAML2 Single Sign-On
+
+CKAN ships with SAML helpers, but our deployment now uses the native login by default.  
+If you need to reconnect to Keycloak:
+
+1. **Update `docker-compose.yml` (and `.env` if used)**
+   - Add `saml2auth` back to the `CKAN__PLUGINS` list.
+   - Reintroduce the SAML environment variables:
+     ```yaml
+     - CKANEXT__SAML2AUTH__IDP_METADATA__LOCATION=remote
+     - CKANEXT__SAML2AUTH__IDP_METADATA__REMOTE_URL=https://auth.snap4idtcity.com/realms/IdtCities/protocol/saml/descriptor
+     - CKANEXT__SAML2AUTH__USER_EMAIL=urn:oid:1.2.840.113549.1.9.1
+     - CKANEXT__SAML2AUTH__USER_FIRSTNAME=urn:oid:2.5.4.42
+     - CKANEXT__SAML2AUTH__USER_LASTNAME=urn:oid:2.5.4.4
+     - CKANEXT__SAML2AUTH__USER_FULLNAME=name
+     - CKANEXT__SAML2AUTH__ENTITY_ID=https://datagate.snap4idtcity.com/saml2/metadata
+     - CKANEXT__SAML2AUTH__ACS_ENDPOINT=/saml2/acs
+     - CKANEXT__SAML2AUTH__ENABLE_CKAN_INTERNAL_LOGIN=false
+     - CKANEXT__SAML2AUTH__WANT_RESPONSE_SIGNED=false
+     - CKANEXT__SAML2AUTH__WANT_ASSERTIONS_SIGNED=false
+     - CKANEXT__SAML2AUTH__ASSERTION_CONSUMER_SERVICE_BINDING=urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+     - CKANEXT__SAML2AUTH__SP__NAME_ID_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+     ```
+
+2. **Write the same values into `ckan.ini`**
+   ```bash
+   docker compose exec ckan bash
+   ckan config-tool /srv/app/ckan.ini \
+     "ckan.plugins = … saml2auth" \
+     "ckanext.saml2auth.idp_metadata.location = remote" \
+     "ckanext.saml2auth.idp_metadata.remote_url = https://auth.snap4idtcity.com/realms/IdtCities/protocol/saml/descriptor" \
+     "ckanext.saml2auth.entity_id = https://datagate.snap4idtcity.com/saml2/metadata" \
+     "ckanext.saml2auth.acs_endpoint = /saml2/acs" \
+     "ckanext.saml2auth.user_email = urn:oid:1.2.840.113549.1.9.1" \
+     "ckanext.saml2auth.user_firstname = urn:oid:2.5.4.42" \
+     "ckanext.saml2auth.user_lastname = urn:oid:2.5.4.4" \
+     "ckanext.saml2auth.user_fullname = name" \
+     "ckanext.saml2auth.enable_ckan_internal_login = false" \
+     "ckanext.saml2auth.want_response_signed = false" \
+     "ckanext.saml2auth.want_assertions_signed = false" \
+     "ckanext.saml2auth.assertion_consumer_service_binding = urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" \
+     "ckanext.saml2auth.sp.name_id_format = urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+   exit
+   docker compose restart ckan
+   ```
+
+3. **Create/update the Keycloak SAML client (realm `IdtCities`)**
+   | Setting | Value |
+   | --- | --- |
+   | Client ID / Entity ID | `https://datagate.snap4idtcity.com/saml2/metadata` |
+   | Assertion Consumer Service (POST URL) | `https://datagate.snap4idtcity.com/saml2/acs` |
+   | Valid Redirect URIs | `https://datagate.snap4idtcity.com/saml2/acs` |
+   | Valid Post Logout Redirect URIs | `https://datagate.snap4idtcity.com/*` |
+   | Web Origins | `https://datagate.snap4idtcity.com` |
+   | NameID format | `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` |
+   | Attribute mappers | Email `urn:oid:1.2.840.113549.1.9.1`, First name `urn:oid:2.5.4.42`, Last name `urn:oid:2.5.4.4`, Full name `name` |
+
+After Keycloak is configured and CKAN is restarted, the `/user/login` link will redirect to `https://auth.snap4idtcity.com` again. Remove these settings to revert to the built-in login.
+
 ---
 
 ## 📊 Monitoring

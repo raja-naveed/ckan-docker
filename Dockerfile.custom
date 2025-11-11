@@ -60,6 +60,7 @@ RUN chown -R ckan:ckan-sys /srv/app/src/ckanext-scheming && \
 # Install map viewer extensions and data loading extensions
 RUN pip install ckanext-geoview && \
     pip install ckanext-pdfview && \
+    pip install "git+https://github.com/ckan/ckanext-reclineview.git#egg=ckanext-reclineview" && \
     pip install ckanext-xloader && \
     pip install messytables && \
     pip install tabulator && \
